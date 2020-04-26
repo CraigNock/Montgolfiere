@@ -5,14 +5,20 @@ import { Link } from 'react-router-dom';
 import Icon from 'react-icons-kit';
 import {cogs} from 'react-icons-kit/icomoon/cogs'
 
+import { AuthContext } from '../AuthContext/AuthContext';
 
 const Header = () => { 
+  const { currentUser, handleSignOut } = React.useContext(AuthContext);
   const [showMenu, setShowMenu] = React.useState(false);
 
 
   return (
-    <StyledBar> 
-      <Title> Where <span>is</span> my Balloon? </Title>
+    <StyledBar>
+      <Title> 
+        <StyledLink to={'/'}>
+          Where <span>is</span> my Balloon? 
+        </StyledLink>
+      </Title>
       <Settings>
         <IconDiv onClick={()=>setShowMenu(!showMenu)}>
           <Icon icon={cogs} size={30} />
@@ -27,6 +33,9 @@ const Header = () => {
           <StyledLink to={'/About'}>
             About
           </StyledLink>
+          <StyledButton onClick={handleSignOut}>
+            Sign Out
+          </StyledButton>
         </Menu>
       </Settings>
     </StyledBar> 
@@ -41,12 +50,13 @@ const StyledBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 2;
   color: whitesmoke;
   background: rgba(0,0,0,.5);
   margin-bottom: 1rem;
   height: 2.5rem;
   opacity: 0;
-
+  transition: opacity 2s;
   &:hover {
     opacity: 1;
     transition: opacity 2s;
@@ -54,7 +64,7 @@ const StyledBar = styled.div`
 `;
 const Title = styled.div`
   padding: .5rem 1rem;
-  cursor: context-menu;
+  /* cursor: context-menu; */
   span{
     font-style: italic;
   }
@@ -88,11 +98,22 @@ const Menu = styled.div`
   box-sizing: border-box;
   background: rgba(0,0,0,.5);
   border-radius: 0 0 0 7px;
+  padding: 0 0 .25rem 0;
 `;
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: whitesmoke;
   padding: .25rem .5rem .25rem .75rem;
+  &:hover{
+    background: rgba(0,0,0,.25);
+  }
+`;
+const StyledButton = styled.button`
+  background: transparent;
+  border: none;
+  color: whitesmoke;
+  text-align: left;
+  padding-left: .75rem;
   &:hover{
     background: rgba(0,0,0,.25);
   }

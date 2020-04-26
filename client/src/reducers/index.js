@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 
-import appReducer from './appReducer';
-import conditionsReducer from './conditionsReducer';
+import app from './appReducer';
+import conditions from './conditionsReducer';
+import user from './userReducer';
 
-
-
-export default combineReducers({ appReducer, conditionsReducer, });
+//ie state.app, state.conditions, state.user
+export default combineReducers({ app, conditions, user, });

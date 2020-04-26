@@ -7,7 +7,7 @@ const morgan = require('morgan');
 const { getUserProfile, createUserProfile } = require('./handlers');
 
 
-const PORT = 4000;
+const PORT = 8000;
 
 express()
   .use(function(req, res, next) {

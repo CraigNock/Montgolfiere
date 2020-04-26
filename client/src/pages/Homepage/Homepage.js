@@ -1,9 +1,19 @@
 import React from 'react'; 
 import styled from 'styled-components'; 
 
-import MapMap from '../../components/MapMap';
 import Header from '../../components/Header';
-// import Clouds from '../../components/Clouds';
+import AlertBar from '../../components/AlertBar';
+import MapMap from '../../components/MapMap';
+import HUD from '../../components/HUD';
+import ConditionsDisplay from '../../components/ConditionsDisplay';
+import NearbyDisplay from '../../components/NearbyDisplay';
+import ImageModal from '../../components/ImageModal';
+
+import ChatInterface from '../../components/ChatInterface';
+import TradeInterface from '../../components/TradeInterface';
+
+
+
 
 const Homepage = () => { 
 

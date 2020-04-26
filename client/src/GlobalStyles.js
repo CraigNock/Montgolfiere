@@ -59,12 +59,21 @@ export default createGlobalStyle`
 
   body {
     line-height: 1.25;
-    background: whitesmoke;
-    color: black;
+    background: skyblue;
+    overflow: hidden;
+    color: whitesmoke;
     font-family: 'Poppins', sans-serif;
   }
   button {
     font-family: 'Poppins', sans-serif;
   }
+
+  /* for map sizing */
+  .leaflet-container {
+  width: 60%;
+  height: 60vh;
+  }
+
+
 
 `;

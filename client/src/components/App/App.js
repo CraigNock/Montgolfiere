@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Homepage from '../../pages/Homepage';
 import Profile from '../../pages/Profile';//longterm->other :user profile pages
 import About from '../../pages/About';
-
+import Clouds from '../../components/Clouds';
 
 
 const App = () => {
@@ -15,6 +15,7 @@ const App = () => {
     <Router>
       <Wrapper>
         <GlobalStyles />
+        <Clouds/>
         <Switch>
           <Route exact path="/">
             <Homepage />
@@ -34,8 +35,10 @@ const App = () => {
 
 
 const Wrapper = styled.div`
-
+  overflow: hidden;
+  
 `;
+
 
 
 export default App;

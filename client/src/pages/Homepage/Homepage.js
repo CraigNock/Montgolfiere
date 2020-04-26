@@ -1,11 +1,18 @@
 import React from 'react'; 
 import styled from 'styled-components'; 
 
+import MapMap from '../../components/MapMap';
+import Header from '../../components/Header';
+// import Clouds from '../../components/Clouds';
+
 const Homepage = () => { 
 
   return (
     <StyledDiv> 
-      <div> Homepage </div>
+      <Header />
+      
+      <MapMap />
+      
     </StyledDiv> 
   ) 
 }; 

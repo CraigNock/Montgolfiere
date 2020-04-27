@@ -1,4 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { updateCurrentUser } from '../../reducersActions/userActions';
 
 import withFirebaseAuth from 'react-with-firebase-auth';
 import * as firebase from 'firebase';
@@ -6,6 +8,7 @@ import 'firebase/auth';
 
 
 export const AuthContext = createContext(null);
+  
 
   // Your web app's Firebase configuration
   var firebaseConfig = {
@@ -31,6 +34,7 @@ export const AuthContext = createContext(null);
 // {signInWithGoogle, signOut, user} are provided/imported with firebase
 const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => { 
   const [currentUser, setCurrentUser] = useState({}); //replace with redux state
+  const dispatch = useDispatch();
 
   const handleSignOut = () => {
     signOut();
@@ -55,9 +59,10 @@ const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => {
         .then((json) => {
           console.log('json.data', json.data);
           setCurrentUser(json.data);
-          
+          dispatch(updateCurrentUser(json.data));
         });
     }
+// eslint-disable-next-line
   }, [user])
 
 

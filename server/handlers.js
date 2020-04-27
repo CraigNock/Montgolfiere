@@ -1,5 +1,14 @@
 'use strict';
 
+const {startingLocations} = require('./data.js');
+
+const randy = (min, max) => { 
+    let rand = Math.floor((Math.random()*(max - min)) + min);
+    return rand;
+  };
+
+
+
 const admin = require('firebase-admin');
 
 require('dotenv').config();
@@ -45,11 +54,11 @@ const queryDatabase = async (key) => {
 const getUserProfile = async (email) => { 
   const data = (await queryDatabase('userProfiles')) || {};
   //note: data includes db generated key for profile
-  console.log('getuserprofile data ', data); 
+  // console.log('getuserprofile data ', data); 
   const dataValue = Object.keys(data)
     .map((item) => data[item])
     .find((obj) => obj.email === email);
-  console.log('dataValue', dataValue);
+  // console.log('dataValue', dataValue);
   return dataValue || false;
 };
 
@@ -59,7 +68,7 @@ const getUserProfile = async (email) => {
 //receives:google user data
 const createUserProfile = async (req, res) => {
   const returningUser = (await getUserProfile(req.body.email));
-  console.log('returningUser ',returningUser);
+  // console.log('returningUser ',returningUser);
 
   if (returningUser) {
     //dispatch currentuserupdate logged in and active?
@@ -73,18 +82,22 @@ const createUserProfile = async (req, res) => {
   } else {
     const userProfilesRef = db.ref('userProfiles');
     //CHANGE SO INPUTS FULL PROFILE not just google deets (possibly collate in state and sent as req.body instead of the google 'user' bits)
+    
+    const start = startingLocations[randy(0, 9)];
+
     const newProfile = {
       displayName: req.body.displayName,
       email: req.body.email,
       imageSrc: req.body.photoURL,
       id: null,
-      location: [],
+      location: start.coords,
+      elevation: 1,
       lastActive: null,
       items: [],
       upgrades: [],
       treasureMaps: {},
     
-      startingLocation: {},
+      startingLocation: start,
       friends: [],
       statistics: {},
       collectables: [],
@@ -92,11 +105,11 @@ const createUserProfile = async (req, res) => {
       achievements: [],
     };
 
-    userProfilesRef.push(req.body).then(() => {
+    userProfilesRef.push(newProfile).then(() => {
       //either trigger profile fetch or push straight to userstate +loggedin and active
       res.status(200).json({
         status: 200,
-        data: req.body,
+        data: newProfile,
         newUser: false,
         message: 'new user',
       });

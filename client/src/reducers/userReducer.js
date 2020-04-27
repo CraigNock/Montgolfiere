@@ -7,24 +7,25 @@ const initialState = {
   loggedIn: false,
 };
 
-const newUserProfile = {
-  displayName: null,
-  email: null,
-  imageSrc: null,
-  id: null,
-  location: [],
-  lastActive: null,
-  items: [],
-  upgrades: [],
-  treasureMaps: {},
+// const newUserProfile = {
+//   displayName: null,
+//   email: null,
+//   imageSrc: null,
+//   id: null,
+//   location: [],
+//   elevation: 2,
+//   lastActive: null,
+//   items: [],
+//   upgrades: [],
+//   treasureMaps: {},
 
-  startingLocation: {},
-  friends: [],
-  statistics: {},
-  collectables: [],
-  badges: [],
-  achievements: [],
-};
+//   startingLocation: {},
+//   friends: [],
+//   statistics: {},
+//   collectables: [],
+//   badges: [],
+//   achievements: [],
+// };
 
 
 const userReducer = (state = initialState, action) => {
@@ -32,6 +33,8 @@ const userReducer = (state = initialState, action) => {
     case 'UPDATE-CURRENT-USER': {
       return produce(state, draftState => {
         draftState.profile = action.user;
+        draftState.active = true;
+        draftState.loggedIn = true;
       });
     };
     default:

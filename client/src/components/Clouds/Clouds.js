@@ -8,7 +8,7 @@ import Cloud from './Cloud';
 //   return rand;
 // };
 
-const numberOfClouds = 7;
+const numberOfClouds = 14;
 const uniqueSpeeds = [];
 const randSpeeds = (min, max) => { 
   let rand = Math.floor((Math.random()*(max - min)) + min);

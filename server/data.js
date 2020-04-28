@@ -10,6 +10,7 @@ const startingLocations = [
   {city: 'Kyoto', coords: [35.01, 135.76]},
   {city: 'Wellington', coords: [-41.28, 174.77]},
   {city: 'Bogota', coords: [4.71, -74.07]},
+  {city: 'Jerusalem', coords: [31.77, 35.21]},
 ];
 
 

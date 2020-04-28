@@ -59,7 +59,10 @@ export default createGlobalStyle`
 
   body {
     line-height: 1.25;
-    background: skyblue;
+    width:100vw;
+    height:100vh;
+    /* background: #2980b9; */
+    background: linear-gradient(180deg, rgba(0,122,235,1) 0%, rgba(157,207,255,1) 83%);
     overflow: hidden;
     color: whitesmoke;
     font-family: 'Poppins', sans-serif;

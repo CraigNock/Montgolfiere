@@ -90,10 +90,10 @@ const MapMap = () => {
   }
   useInterval(()=>{
     if(launch) newLeg();
-  },15000);
+  },59000);
 
 
-//STORES BALLOON LOCATION EVERY 10 SECONDS 
+//STORES BALLOON LOCATION EVERY 10 SECONDS lastVector
   const check = useInterval(()=>{
     // console.log('int 10s viewcenter', mapRef.current.viewport.center);
     dispatch(updateLocation([...mapRef.current.viewport.center]));
@@ -122,10 +122,15 @@ const MapMap = () => {
         // onClick={()=>newnew()}
         // onMove={centerMark}
       >
-        <TileLayer
+        {/* <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="http://osm.org/copyright">OSM</a> contributors' /> */}
+        <TileLayer
+          url={`https://tile.thunderforest.com/pioneer/{z}/{x}/{y}.png?apikey=${process.env.REACT_APP_THUNDERFOREST_MAPTILES_KEY}`}
           attribution='&copy; <a href="http://osm.org/copyright">OSM</a> contributors' />
-        
+
+
+
         {/* <StyledMarker
           ref={markRef}
           position={currentCenter} 

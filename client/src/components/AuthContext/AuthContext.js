@@ -68,7 +68,7 @@ const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => {
 // eslint-disable-next-line
   }, [user])
 
-
+///useeffect current user grab user lastVector data
 
   return (
     <AuthContext.Provider 

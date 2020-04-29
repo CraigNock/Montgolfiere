@@ -73,8 +73,8 @@ export default createGlobalStyle`
 
   /* for map sizing */
   .leaflet-container {
-  width: 60%;
-  height: 60vh;
+    width: 100%;
+    height: 100%;
   }
 
 

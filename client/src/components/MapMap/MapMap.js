@@ -28,7 +28,7 @@ const MapMap = () => {
   const { profile } = useSelector((state) => state.user);
   //add late if active===false stop everything(toggle active else where)
   // console.log('profile', profile);
-  const { windSum, windBearing } = useSelector((state) => state.conditions);
+  const { windSum, windBearing } = useSelector((state) => state.conditions.current);
   
   
   const dispatch = useDispatch();
@@ -44,7 +44,6 @@ const MapMap = () => {
     let conno = await fetchConditions(profile.location);
     console.log('conno', conno);
     dispatch(updateCurrentConditions(conno));
-    console.log('windsum', windSum);
   };
   useEffect(() => {
     dothecondition();
@@ -83,8 +82,8 @@ const MapMap = () => {
     let newDest = await findNextLoc(
       mapRef.current.viewport.center[0], 
       mapRef.current.viewport.center[1], 
-      (windSum * profile.elevation), 
-      windBearing
+      windBearing,
+      (windSum * 100 *  profile.elevation) 
     );
     console.log('newDest', newDest);
     setNewLoc(newDest);
@@ -101,7 +100,7 @@ const MapMap = () => {
   }, 10000);
 //KEEPS BALLOON MARKED CENTERED
   const centerMark = () => {
-    // setCurrentCenter(mapRef.current.viewport.center);//WHY???
+    setCurrentCenter(mapRef.current.viewport.center);//WHY???
     
   };
 
@@ -113,6 +112,7 @@ const MapMap = () => {
         ref={mapRef}
         defaultCenter={profile.location} 
         zoom={14}
+        zoomSnap={2}
         zoomControl={false}
         dragging={false}
         doubleClickZoom={'center'}
@@ -167,7 +167,7 @@ const balloonBob = keyframes`
     transform: translateY(0);
   }
   50% {
-    transform: translateY(2px);
+    transform: translateY(4px);
   }
   100% {
     transform: translateY(0);
@@ -181,7 +181,12 @@ const StyledDiv = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* height: 100vh; */
+  margin: 0 auto;
+  height: 60vh;
+  width: 60vw;
+  border: 8px ridge goldenrod;
+  border-radius: 10px;
+  box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.53);
 
 `;
 
@@ -202,7 +207,7 @@ const StyledBalloon = styled.img`
   width: 30px;
   margin: -15px 0 0 -15px;
   z-index: 2000;
-  animation: ${balloonBob} 5s ease-in-out infinite ;
+  animation: ${balloonBob} 4s ease-in-out infinite ;
 `;
 const StyledButton = styled.button`
   position: absolute;
@@ -212,8 +217,10 @@ const StyledButton = styled.button`
   left: 50%;
   margin: 30px 0 0 -2rem;
   z-index: 2000;
-  border: none;
+  border: 2px solid goldenrod;
   border-radius: 10px;
+  color: white;
+  background: gray;
 `;
 
 const Pinpoint = styled.div`

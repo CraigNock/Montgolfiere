@@ -4,8 +4,8 @@ import produce from 'immer';
 
 
 const initialState = {
-  "windSum": 16.93,
-  "windBearing": 338,
+  current: {"windSum": 16.93,
+  "windBearing": 338,}
 };
 
 //sample of state
@@ -36,9 +36,9 @@ const initialState = {
 const conditionsReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'UPDATE-CURRENT-CONDITIONS': {
-      console.log('action.conditions', action.conditions);
+      // console.log('action.conditions', action.conditions);
       return produce(state, draftState => {
-        draftState = action.conditions;//NO WORK WHY
+        draftState.current = {...action.conditions};//NO WORK WHY
       });
     };
   

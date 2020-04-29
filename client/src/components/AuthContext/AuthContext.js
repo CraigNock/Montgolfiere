@@ -1,6 +1,8 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+
 import { updateCurrentUser } from '../../reducersActions/userActions';
+import { setStatusWaiting, setStatusLoading, setStatusLogged } from '../../reducersActions/appActions';
 
 import withFirebaseAuth from 'react-with-firebase-auth';
 import * as firebase from 'firebase';
@@ -33,7 +35,7 @@ export const AuthContext = createContext(null);
 
 // {signInWithGoogle, signOut, user} are provided/imported with firebase
 const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => { 
-  const [currentUser, setCurrentUser] = useState({}); //replace with redux state
+  const [currentUser, setCurrentUser] = useState({}); //replace with redux state? No. Keep separate, avoid misfire.
   const dispatch = useDispatch();
 
   const handleSignOut = () => {
@@ -60,6 +62,7 @@ const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => {
           console.log('json.data', json.data);
           setCurrentUser(json.data);
           dispatch(updateCurrentUser(json.data));
+          dispatch(setStatusLogged());
         });
     }
 // eslint-disable-next-line

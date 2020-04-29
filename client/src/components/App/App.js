@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import GlobalStyles from '../../GlobalStyles';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
+import GlobalStyles from '../../GlobalStyles';
 import WelcomeSignin from '../WelcomeSignin';
 import Homepage from '../../pages/Homepage';
 import Profile from '../../pages/Profile';//longterm->other :user profile pages

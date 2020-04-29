@@ -7,4 +7,10 @@ export const updateCurrentUser = (userObj) => (
     user: userObj,
   }
 );
+export const updateLocation = (newLocation) => (
+  {
+    type: 'UPDATE-LOCATION',
+    newLocation,
+  }
+);
 

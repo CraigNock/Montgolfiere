@@ -14,7 +14,10 @@ const initialState = {
 //   id: null,
 //   location: [],
 //   elevation: 2,
-//   lastActive: null,
+
+///important, calc travel on re active(update on burn or location update?)
+//   lastActive: null, 
+
 //   items: [],
 //   upgrades: [],
 //   treasureMaps: {},
@@ -31,16 +34,23 @@ const initialState = {
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case 'UPDATE-CURRENT-USER': {
+      // console.log('actionuser', action);
+      // console.log('stateuser', state);
       return produce(state, draftState => {
         draftState.profile = action.user;
         draftState.active = true;
         draftState.loggedIn = true;
       });
     };
+    case 'UPDATE-LOCATION': {
+      // console.log('state.profile', state.profile);
+      // console.log('action.newLocation', action.newLocation);
+      return produce(state, draftState => {
+        draftState.profile.location = action.newLocation;
+      });
+    };
     default:
-      return { 
-        state 
-      };
+      return state ;
   }
 };
 

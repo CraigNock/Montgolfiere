@@ -4,8 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-const { getUserProfile, createUserProfile } = require('./handlers');
-
+const { getUserProfile, createUserProfile } = require('./userHandlers');
+const { getConditions, getAddressPosition } = require('./apiHandlers');
 
 const PORT = 8000;
 
@@ -32,6 +32,8 @@ express()
   // endpoints
   .get('/getuser', getUserProfile)
   .post('/createuser', createUserProfile)
+
+  .post('/api/conditions', getConditions)
 
 
 

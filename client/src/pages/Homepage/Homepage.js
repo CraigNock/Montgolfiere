@@ -16,12 +16,13 @@ import { useDispatch, useSelector } from 'react-redux';
 
 
 const Homepage = () => { 
-  const { profile, active, loggedIn } = useSelector((state) => state.user);
+  const { status } = useSelector((state) => state.app);
+  console.log('status', status);
   return (
     <StyledDiv> 
       <Header />
       
-      {profile? <MapMap /> : ''}
+      {(status==='logged in')? <MapMap /> : ''}
       
     </StyledDiv> 
   ) 

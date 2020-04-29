@@ -1,0 +1,41 @@
+
+const initialLoc = [1.35, 103.82];
+const nextLoc = [];
+
+
+// time = 60; //always 60
+
+const findNextLoc = (latold, longold, bearing, kphspeed) => {
+  // console.log('latold, longold, bearing, kphspeed', latold, longold, bearing, kphspeed);
+  
+  const R = 6378.1;  //Radius of the Earth in km
+//Bearing converted to radians(-90 acounts for unit circle).
+  const brng = (bearing - 90) * (Math.PI / 180);  
+  // const brng = 1.57;
+  //d in km = speed(kph) * time(h)===1/60
+  const d = kphspeed / 60;  //Distance in km in 1 minute
+  // const d = 15;
+
+  //lat2  52.20444 - expected lat result 
+  //lon2  0.36056 - expected long result 
+
+  let lat1 = latold * (Math.PI / 180); //Current lat point converted to radians
+  // let lat1 = -52.20472 * (Math.PI / 180); 
+  let lon1 = longold * (Math.PI / 180); //Current long point converted to radians
+  // let lon1 = 0.14056 * (Math.PI / 180); 
+
+  let lat2 = Math.asin( Math.sin(lat1)*Math.cos(d/R) + Math.cos(lat1)*Math.sin(d/R)*Math.cos(brng));
+
+  let lon2 = lon1 + Math.atan2(Math.sin(brng)*Math.sin(d/R)*Math.cos(lat1), Math.cos(d/R)-Math.sin(lat1)*Math.sin(lat2));
+
+  lat2 = lat2 * (180/Math.PI);
+  lon2 = lon2 * (180/Math.PI);
+
+  // console.log( 'newlat ', lat2, 'newlong ', lon2);
+
+  return [lat2, lon2];
+};
+//The longitude can be normalised to −180…+180 using (lon+540)%360-180
+
+
+export default findNextLoc;

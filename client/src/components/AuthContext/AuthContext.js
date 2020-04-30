@@ -1,8 +1,9 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { updateCurrentUser } from '../../reducersActions/userActions';
+import { updateCurrentUser, updateLocation } from '../../reducersActions/userActions';
 import { setStatusWaiting, setStatusLoading, setStatusLogged } from '../../reducersActions/appActions';
+import findNextLoc from '../MapMap/findNextLoc';
 
 import withFirebaseAuth from 'react-with-firebase-auth';
 import * as firebase from 'firebase';
@@ -43,6 +44,23 @@ const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => {
     setCurrentUser({});
   };
 
+  const handleLastVector = async (lastVector) => {
+    let activeDiff = Date.now() - lastVector.lastActive
+    console.log('activeDiff', activeDiff);
+    activeDiff = (activeDiff < 3600000) ? activeDiff/3600000 : 1;
+    const adjustedSpeed = 
+      (lastVector.lastWindSum * lastVector.lastElevation) * activeDiff;
+    console.log('adjustedSpeed', adjustedSpeed);
+    const start = await findNextLoc(
+      lastVector.lastLocation[0],
+      lastVector.lastLocation[1],
+      lastVector.lastBearing,
+      adjustedSpeed
+    );
+    console.log('start', start);
+    return start;
+  }
+
 //if someone signs in with google (user changes) then check if user exists on db, if not then add to db and set currentUser to that user data
   useEffect(() => {
     if (user) {
@@ -62,7 +80,16 @@ const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => {
           console.log('json.data', json.data);
           setCurrentUser(json.data);
           dispatch(updateCurrentUser(json.data));
-          dispatch(setStatusLogged());
+        //grabs last known vector and updates the starting location
+          fetch(`/getLastVector/${json.data.userId}`)
+            .then(vector => vector.json())
+            .then(last =>{ 
+              console.log('last', last.data);
+              return handleLastVector(last.data)
+            })
+            .then(start => dispatch(updateLocation(start)))
+            .then(()=>dispatch(setStatusLogged()))
+            
         });
     }
 // eslint-disable-next-line

@@ -21,9 +21,8 @@ const ballooon = new Icon({
 });
 
 
-//spotify workshop for apikey handlers
 const MapMap = () => { 
-  // console.log('LOAD MAP');//continuously reloads onMove=>setcurrentcenter
+  // console.log('LOAD MAP');
 
   const { profile } = useSelector((state) => state.user);
   //add late if active===false stop everything(toggle active else where)
@@ -33,11 +32,10 @@ const MapMap = () => {
   
   const dispatch = useDispatch();
 
+  const [launch, setLaunch] = useState(false);
   const [newLoc, setNewLoc] = useState(profile.location);
-  // const [checkpoint, setCheckpoint] = useState(profile.location);
   const [currentCenter, setCurrentCenter] = useState(profile.location)
   const [ggg, setggg] = useState(false);
-  const [launch, setLaunch] = useState(false);
 
 //ON MOUNT FETCH CONDITIONS
   const dothecondition = async () => {
@@ -52,9 +50,8 @@ const MapMap = () => {
   }, []);
   
 
-  // let anim = new L.PosAnimation();
   const mapRef = useRef();
-  const markRef = useRef();
+  // const markRef = useRef();
   const panToOptions = {
         animate: true,
         duration: 60, //seconds
@@ -70,20 +67,16 @@ const MapMap = () => {
     }, 100);
   }, [mapRef, newLoc, ggg]);
 
-//TEMPORARY RESTART PAN ON ZOOM
-  // const launch = () => {
-  //   setNewLoc([currentCenter[0]+.1, currentCenter[1]-.1]);
-  // };
-  
+
 //KEEPS BALLOON MOVING - 
 //use findNextLoc on stored speed and bearing with current center then set as newloc
   const newLeg = async () => {
-    console.log('windSum', windSum);
+    console.log('newLeg windSum', windSum);
     let newDest = await findNextLoc(
       mapRef.current.viewport.center[0], 
       mapRef.current.viewport.center[1], 
       windBearing,
-      (windSum * 100 *  profile.elevation) 
+      (windSum * 10 *  profile.elevation) 
     );
     console.log('newDest', newDest);
     setNewLoc(newDest);
@@ -93,17 +86,39 @@ const MapMap = () => {
   },59000);
 
 
+  const updateVector = async () => {
+    console.log('vector update');
+    try{
+      fetch('/newLastVector', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: profile.userId,
+          lastActive: (new Date()).getTime(),
+          lastLocation: [...mapRef.current.viewport.center], ///stale
+          lastBearing: windBearing,
+          lastWindSum: windSum,
+          lastElevation: profile.elevation,
+        }),
+      })
+    } catch (err) {console.log('err', err);}
+  };
+
 //STORES BALLOON LOCATION EVERY 10 SECONDS lastVector
   const check = useInterval(()=>{
     // console.log('int 10s viewcenter', mapRef.current.viewport.center);
     dispatch(updateLocation([...mapRef.current.viewport.center]));
+    updateVector();
   }, 10000);
+
+
 //KEEPS BALLOON MARKED CENTERED
   const centerMark = () => {
     setCurrentCenter(mapRef.current.viewport.center);//WHY???
     
   };
-
 
   return ( 
     <StyledDiv> 

@@ -38,16 +38,11 @@ const queryDatabase = async (key) => {
   let data;
   await ref.once(
     'value',
-    (snapshot) => {
-      data = snapshot.val();
-    },
-    (err) => {
-      console.log(err);
-    }
+    (snapshot) => {data = snapshot.val();},
+    (err) => { console.log(err);}
   );
   return data;
 };
-
 
 //checks the db for the signed in user profile, returns false if doesn't exist yet. Maps through subdata to find match for email input
 //type:GET
@@ -62,11 +57,11 @@ const getUserProfile = async (email) => {
   return dataValue || false;
 };
 
-
 //checks if user profile already exists: if yes sends the google user data, if no adds the new user profile data to the db in the 'userProfiles' collection
 //type:POST
 //receives:google user data
 const createUserProfile = async (req, res) => {
+  console.log('createUserProfile');
   const returningUser = (await getUserProfile(req.body.email));
   // console.log('returningUser ',returningUser);
 
@@ -81,15 +76,17 @@ const createUserProfile = async (req, res) => {
     return;
   } else {
     const userProfilesRef = db.ref('userProfiles');
-    //CHANGE SO INPUTS FULL PROFILE not just google deets (possibly collate in state and sent as req.body instead of the google 'user' bits)
-    
-    const start = startingLocations[randy(0, 9)];
+    const start = startingLocations[randy(0, 10)];
+
+    //pre creates a key in desired node, 
+    //can then include this key value in data placed in that location
+    const userId = await userProfilesRef.push().key; 
 
     const newProfile = {
       displayName: req.body.displayName,
       email: req.body.email,
       imageSrc: req.body.photoURL,
-      id: null,
+      userId: userId,
       location: start.coords,
       elevation: 1,
       lastActive: null,
@@ -98,6 +95,7 @@ const createUserProfile = async (req, res) => {
       treasureMaps: {},
     
       startingLocation: start,
+      startDate: Date.now(),
       friends: [],
       statistics: {},
       collectables: [],
@@ -105,23 +103,61 @@ const createUserProfile = async (req, res) => {
       achievements: [],
     };
 
-    userProfilesRef.push(newProfile).then(() => {
-      //either trigger profile fetch or push straight to userstate +loggedin and active
-      res.status(200).json({
-        status: 200,
-        data: newProfile,
-        newUser: false,
-        message: 'new user',
+    db.ref('userProfiles/' + userId).set(newProfile)
+      .then(() => {
+        res.status(200).json({
+          status: 200,
+          data: newProfile,
+          newUser: true,
+          message: 'new user',
+        });
       });
-    });
   }
 };
 
+/////////////////////////////////////////////
+//LAST VECTOR 
+/////////////////////////////////////////////
+
+// type: GET
+const getLastVector = async (req, res) => {
+  console.log('getLastVector');
+  const { userId } = req.params
+  const data = (await queryDatabase('lastVectors/' + userId)) || {};
+  // const dataValue = Object.keys(data)
+  //   .map((item) => data[item])
+  //   .find((obj) => obj.email === email);
+  // console.log('data', data);
+  res.status(200).json({
+    status: 200,
+    data: data || false,
+  }) 
+};
+
+// type: POST
+// example lastVector= {
+//   email: blah@blah,
+//   lastActive: 43423,
+//   lastLocation: [44, 44],
+//   lastBearing: 230,
+//   lastWindSum: 20,
+//   lastElevation: 2,
+// }
+/////make this not back up requests=> transaction operation
+const newLastVector = async (req, res) => {
+  console.log('newLastVector', req.body.lastLocation);
+  try {
+  await db.ref('lastVectors/' + req.body.userId).set(req.body);
+  res.status(200);
+  } catch (err) {console.log('err', err);}
+};
 
 
 module.exports = {
   getUserProfile,
   createUserProfile,
+  getLastVector,
+  newLastVector,
 };
 
 

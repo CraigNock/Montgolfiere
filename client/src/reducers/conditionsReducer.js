@@ -38,7 +38,7 @@ const conditionsReducer = (state = initialState, action) => {
     case 'UPDATE-CURRENT-CONDITIONS': {
       // console.log('action.conditions', action.conditions);
       return produce(state, draftState => {
-        draftState.current = {...action.conditions};//NO WORK WHY
+        draftState.current = {...action.conditions};
       });
     };
   

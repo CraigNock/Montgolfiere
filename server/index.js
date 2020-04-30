@@ -4,7 +4,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-const { getUserProfile, createUserProfile } = require('./userHandlers');
+const { 
+  getUserProfile, 
+  createUserProfile, 
+  getLastVector,
+  newLastVector, 
+} = require('./userHandlers');
+
 const { getConditions, getAddressPosition } = require('./apiHandlers');
 
 const PORT = 8000;
@@ -30,9 +36,14 @@ express()
 
   // don't need a sign in as googleSignIn is a method in firebase(unless you build your own)
   // endpoints
-  .get('/getuser', getUserProfile)
+//USER ENDPOINTS
+  // .get('/getuser', getUserProfile)
   .post('/createuser', createUserProfile)
+//USER VECTOR ENDPOINTS
+  .get('/getLastVector/:userId', getLastVector)
+  .post('/newLastVector', newLastVector)
 
+//VICINITY ENDPOINTS
   .post('/api/conditions', getConditions)
 
 

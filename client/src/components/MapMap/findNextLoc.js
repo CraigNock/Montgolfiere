@@ -1,16 +1,14 @@
 
-const initialLoc = [1.35, 103.82];
-const nextLoc = [];
 
 
 // time = 60; //always 60
 
-const findNextLoc = (latold, longold, bearing, kphspeed) => {
-  // console.log('latold, longold, bearing, kphspeed', latold, longold, bearing, kphspeed);
+const findNextLoc = async (latold, longold, windBearing, kphspeed) => {
+  // console.log('latold, longold, windBearing, kphspeed', latold, longold, windBearing, kphspeed);
   
   const R = 6378.1;  //Radius of the Earth in km
-//Bearing converted to radians(-90 acounts for unit circle).
-  const brng = (bearing - 90) * (Math.PI / 180);  
+//Bearing converted to radians
+  const brng = (windBearing ) * (Math.PI / 180);  
   //d in km = speed(kph) * time(h)===1/60
   const d = kphspeed / 60;  //Distance in km in 1 minute
   
@@ -30,6 +28,8 @@ const findNextLoc = (latold, longold, bearing, kphspeed) => {
 
   lat2 = lat2 * (180/Math.PI);
   lon2 = lon2 * (180/Math.PI);
+  //normalise
+  lon2 = (lon2+540)%360-180;
 
   // console.log( 'newlat ', lat2, 'newlong ', lon2);
 

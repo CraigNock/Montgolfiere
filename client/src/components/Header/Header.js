@@ -19,8 +19,8 @@ const Header = () => {
           Where <span>is</span> my Balloon? 
         </StyledLink>
       </Title>
-      <Settings>
-        <IconDiv onClick={()=>setShowMenu(!showMenu)}>
+      <Settings onMouseLeave={()=>setShowMenu(!showMenu)}>
+        <IconDiv onMouseEnter={()=>setShowMenu(!showMenu)}>
           <Icon icon={cogs} size={30} />
         </IconDiv>
         <Menu style={{display: showMenu? 'flex' : 'none' }}>
@@ -33,6 +33,7 @@ const Header = () => {
           <StyledLink to={'/About'}>
             About
           </StyledLink>
+          <StylishSpace></StylishSpace>
           <StyledButton onClick={handleSignOut}>
             Sign Out
           </StyledButton>
@@ -99,6 +100,9 @@ const Menu = styled.div`
   background: rgba(0,0,0,.5);
   border-radius: 0 0 0 7px;
   padding: 0 0 .25rem 0;
+  &:hover{
+    display: flex;
+  }
 `;
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -108,11 +112,15 @@ const StyledLink = styled(Link)`
     background: rgba(0,0,0,.25);
   }
 `;
+const StylishSpace = styled.div`
+  height: .5rem;
+`;
 const StyledButton = styled.button`
   background: transparent;
   border: none;
-  color: whitesmoke;
+  color: lightgray;
   text-align: left;
+  font-size: .75rem;
   padding-left: .75rem;
   &:hover{
     background: rgba(0,0,0,.25);

@@ -46,7 +46,8 @@ const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => {
 
   const handleLastVector = async (lastVector) => {
     let activeDiff = Date.now() - lastVector.lastActive
-    console.log('activeDiff', activeDiff);
+    console.log('type', typeof lastVector.lastElevation);
+    console.log('activeDiff', activeDiff, lastVector.lastElevation, lastVector.lastWindSum);
     activeDiff = (activeDiff < 3600000) ? activeDiff/3600000 : 1;
     const adjustedSpeed = 
       (lastVector.lastWindSum * lastVector.lastElevation) * activeDiff;
@@ -90,7 +91,7 @@ const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => {
             .then(start => dispatch(updateLocation(start)))
             .then(()=>dispatch(setStatusLogged()))
             
-        });
+        }).catch(err=> console.log('athfet err', err));
     }
 // eslint-disable-next-line
   }, [user])

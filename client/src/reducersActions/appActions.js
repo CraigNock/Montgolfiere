@@ -2,16 +2,16 @@
 
 export const setStatusWaiting = () => (
   {
-    type: 'SET-STATUS-WAITING',
+    type: 'SET_STATUS_WAITING',
   }
 );
 export const setStatusLoading = () => (
   {
-    type: 'SET-STATUS-LOADING',
+    type: 'SET_STATUS_LOADING',
   }
 );
 export const setStatusLogged = () => (
   {
-    type: 'SET-STATUS-LOGGED',
+    type: 'SET_STATUS_LOGGED',
   }
 );

@@ -8,14 +8,11 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case 'value':
       
-      return { 
-        state 
-      };
+      return state 
   
     default:
-      return { 
+      return 
         state 
-      };
   }
 };
 

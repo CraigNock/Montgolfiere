@@ -3,14 +3,20 @@
 
 export const updateCurrentUser = (userObj) => (
   {
-    type: 'UPDATE-CURRENT-USER',
+    type: 'UPDATE_CURRENT_USER',
     user: userObj,
   }
 );
 export const updateLocation = (newLocation) => (
   {
-    type: 'UPDATE-LOCATION',
+    type: 'UPDATE_LOCATION',
     newLocation,
+  }
+);
+export const changeElevation = (newElevation) => (
+  {
+    type: 'CHANGE_ELEVATION',
+    newElevation,
   }
 );
 

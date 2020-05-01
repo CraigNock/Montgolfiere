@@ -1,7 +1,7 @@
-import React from 'react';
+// import React from 'react';
 
 
-const fetchConditions = (position) => {
+const fetchConditions = async (position) => {
 
   let currentPosition = [...position];
   // console.log('position at fetch ', currentPosition);
@@ -20,7 +20,7 @@ const fetchConditions = (position) => {
         // console.log('windSpeed ', data.conditions.currently.windSpeed);
         let currentConditions = data.conditions.currently;
         return currentConditions;
-      })
+      }).catch(err => console.log('cond err', err))
   )
 };
 

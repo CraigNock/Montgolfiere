@@ -41,7 +41,7 @@ express()
   .post('/createuser', createUserProfile)
 //USER VECTOR ENDPOINTS
   .get('/getLastVector/:userId', getLastVector)
-  .post('/newLastVector', newLastVector)
+  .put('/newLastVector', newLastVector)
 
 //VICINITY ENDPOINTS
   .post('/api/conditions', getConditions)

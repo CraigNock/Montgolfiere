@@ -3,8 +3,8 @@ import styled, {keyframes} from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
-import L, { Icon } from "leaflet";
-import { DriftMarker } from "leaflet-drift-marker";
+// import L, { Icon } from "leaflet";
+// import { DriftMarker } from "leaflet-drift-marker";
 
 import balloon from '../../assets/balloon.svg'
 import useInterval from '../../hooks/use-interval-hook';
@@ -15,41 +15,56 @@ import { updateCurrentConditions
 import fetchConditions from './fetchConditions'
 import findNextLoc from './findNextLoc';
 
-const ballooon = new Icon({
-  iconUrl: balloon,
-  iconSize: [25, 25]
-});
+// const ballooon = new Icon({
+//   iconUrl: balloon,
+//   iconSize: [25, 25]
+// });
 
 
 const MapMap = () => { 
   // console.log('LOAD MAP');
 
   const { profile } = useSelector((state) => state.user);
-  //add late if active===false stop everything(toggle active else where)
+  //add if active===false stop everything(toggle active else where)
   // console.log('profile', profile);
   const { windSum, windBearing } = useSelector((state) => state.conditions.current);
-  
-  
   const dispatch = useDispatch();
 
   const [launch, setLaunch] = useState(false);
+  const [anchored, setAnchored] = useState(true);
+
   const [newLoc, setNewLoc] = useState(profile.location);
-  const [currentCenter, setCurrentCenter] = useState(profile.location)
+  // const [currentCenter, setCurrentCenter] = useState(profile.location);
   const [ggg, setggg] = useState(false);
 
 //ON MOUNT FETCH CONDITIONS
-  const dothecondition = async () => {
-    let conno = await fetchConditions(profile.location);
-    console.log('conno', conno);
-    dispatch(updateCurrentConditions(conno));
+  const handleConditions = async () => {
+    try {
+      let conno = await fetchConditions(profile.location);
+      console.log('conno', conno);
+      if(conno) dispatch(updateCurrentConditions(conno));
+
+    } catch (err) {
+      console.log('handlecond error', err)
+    };
   };
   useEffect(() => {
-    dothecondition();
-//on dismount clear the location update interval below
-    return ()=> clearInterval(check);
+    handleConditions();
+//on dismount clear the intervals below
+    return ()=> {
+      console.log('clean intervals'); 
+      clearInterval(freshBreeze);
+      clearInterval(checkpoint); 
+      clearInterval(updateDestination)
+    };
+// eslint-disable-next-line
   }, []);
+//FRESH WEATHER EVERY 10MINS 
+  const freshBreeze = useInterval(() => {
+    handleConditions();
+  }, 600000);
   
-
+//TRIGGERS PAN METHOD ON DESTINATION CHANGE, ZOOM
   const mapRef = useRef();
   // const markRef = useRef();
   const panToOptions = {
@@ -65,13 +80,15 @@ const MapMap = () => {
       console.log('panTo');
       leafletElement.panTo(newLoc, panToOptions)
     }, 100);
+// eslint-disable-next-line
   }, [mapRef, newLoc, ggg]);
 
 
-//KEEPS BALLOON MOVING - 
+//KEEPS BALLOON MOVING - Trigged on Launch
 //use findNextLoc on stored speed and bearing with current center then set as newloc
-  const newLeg = async () => {
-    console.log('newLeg windSum', windSum);
+  const newLeg = async (anchor) => {
+    console.log('newLeg windSum, windBearing', windSum, windBearing);
+    if (!anchor) {
     let newDest = await findNextLoc(
       mapRef.current.viewport.center[0], 
       mapRef.current.viewport.center[1], 
@@ -80,34 +97,41 @@ const MapMap = () => {
     );
     console.log('newDest', newDest);
     setNewLoc(newDest);
+    } else {
+      setNewLoc(mapRef.current.viewport.center);
+    }
   }
-  useInterval(()=>{
+
+  const updateDestination = useInterval(()=>{
+    // console.log('minint');
     if(launch) newLeg();
   },59000);
 
+  useEffect(() => {
+    if(mapRef.current.viewport.center)newLeg();
+  }, [profile.elevation]);
 
-  const updateVector = async () => {
+//STORES BALLOON LOCATION EVERY 10 SECONDS lastVector issue:billion calls
+  const updateVector = () => {
     console.log('vector update');
-    try{
       fetch('/newLastVector', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
+          'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           userId: profile.userId,
           lastActive: (new Date()).getTime(),
-          lastLocation: [...mapRef.current.viewport.center], ///stale
+          lastLocation: [...mapRef.current.viewport.center], 
           lastBearing: windBearing,
           lastWindSum: windSum,
           lastElevation: profile.elevation,
         }),
-      })
-    } catch (err) {console.log('err', err);}
+      }).catch(err => {console.log('udv err', err);})
   };
 
-//STORES BALLOON LOCATION EVERY 10 SECONDS lastVector
-  const check = useInterval(()=>{
+  const checkpoint = useInterval(()=>{
     // console.log('int 10s viewcenter', mapRef.current.viewport.center);
     dispatch(updateLocation([...mapRef.current.viewport.center]));
     updateVector();
@@ -115,10 +139,10 @@ const MapMap = () => {
 
 
 //KEEPS BALLOON MARKED CENTERED
-  const centerMark = () => {
-    setCurrentCenter(mapRef.current.viewport.center);//WHY???
+  // const centerMark = () => {
+  //   setCurrentCenter(mapRef.current.viewport.center);//WHY???
     
-  };
+  // };
 
   return ( 
     <StyledDiv> 
@@ -158,10 +182,20 @@ const MapMap = () => {
         <StyledButton 
           onClick={()=>{
             setLaunch(true);
+            setAnchored(false);
             newLeg();
           }}
           style={{display: launch? 'none' : 'flex'}}
         >Launch!</StyledButton>
+
+        <StyledButton 
+          onClick={()=>{
+            setLaunch(false);
+            setAnchored(true)
+            newLeg('anchor');
+          }}
+          style={{display: (profile.elevation==1 && !anchored)? 'flex' : 'none'}}
+        >Anchor?</StyledButton>
 
         {/* <DriftMarker 
           // ref={markRef} 
@@ -210,13 +244,13 @@ const StyledDiv = styled.div`
 
 `;
 
-const StyledMarker = styled(Marker)`
-  /* -webkit-transition: transform 3s linear;
-  -moz-transition: transform 3s linear;
-  -o-transition: transform 3s linear;
-  -ms-transition: transform 3s linear;
-  transition: transform 3s linear;  */
-`;
+// const StyledMarker = styled(Marker)`
+//   /* -webkit-transition: transform 3s linear;
+//   -moz-transition: transform 3s linear;
+//   -o-transition: transform 3s linear;
+//   -ms-transition: transform 3s linear;
+//   transition: transform 3s linear;  */
+// `;
 
 //make this it's own component, custom color/balloon
 const StyledBalloon = styled.img`
@@ -243,12 +277,12 @@ const StyledButton = styled.button`
   background: gray;
 `;
 
-const Pinpoint = styled.div`
-  height:1px;
-  width: 1px;
-  position: absolute;
-  top: 50% ;
-  left: 50%;
-  z-index: 2002;
-  background: pink;
-`;
+// const Pinpoint = styled.div`
+//   height:1px;
+//   width: 1px;
+//   position: absolute;
+//   top: 50% ;
+//   left: 50%;
+//   z-index: 2002;
+//   background: pink;
+// `;

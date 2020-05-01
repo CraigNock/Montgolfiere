@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
 
 import GlobalStyles from '../../GlobalStyles';
 import WelcomeSignin from '../WelcomeSignin';
@@ -15,11 +15,7 @@ import { AuthContext } from '../AuthContext/AuthContext';
 
 
 const App = () => {
-  const { 
-    currentUser, 
-    handleSignOut 
-  } = React.useContext(AuthContext);
-
+  const { currentUser } = React.useContext(AuthContext);
 
   return (
     <Router>

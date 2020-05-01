@@ -89,7 +89,7 @@ const createUserProfile = async (req, res) => {
       userId: userId,
       location: start.coords,
       elevation: 1,
-      lastActive: null,
+      // lastActive: null,
       items: [],
       upgrades: [],
       treasureMaps: {},
@@ -102,7 +102,19 @@ const createUserProfile = async (req, res) => {
       badges: [],
       achievements: [],
     };
-
+    
+    await db.ref('lastVectors/' + userId).set(
+      {
+        email: req.body.email,
+        lastActive: Date.now(),
+        lastLocation: start.coords,
+        lastBearing: 90,
+        lastWindSum: 0,
+        lastElevation: 0,
+      }
+    );
+  
+  
     db.ref('userProfiles/' + userId).set(newProfile)
       .then(() => {
         res.status(200).json({
@@ -124,10 +136,6 @@ const getLastVector = async (req, res) => {
   console.log('getLastVector');
   const { userId } = req.params
   const data = (await queryDatabase('lastVectors/' + userId)) || {};
-  // const dataValue = Object.keys(data)
-  //   .map((item) => data[item])
-  //   .find((obj) => obj.email === email);
-  // console.log('data', data);
   res.status(200).json({
     status: 200,
     data: data || false,
@@ -143,12 +151,12 @@ const getLastVector = async (req, res) => {
 //   lastWindSum: 20,
 //   lastElevation: 2,
 // }
-/////make this not back up requests=> transaction operation
+
 const newLastVector = async (req, res) => {
-  console.log('newLastVector', req.body.lastLocation);
+  // console.log('newLastVector', req.body);
   try {
   await db.ref('lastVectors/' + req.body.userId).set(req.body);
-  res.status(200);
+  res.status(204).json({status:204}); //fixed with json (.status doesnt actually send, needs a .send or .json)
   } catch (err) {console.log('err', err);}
 };
 

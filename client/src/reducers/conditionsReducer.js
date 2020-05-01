@@ -35,12 +35,11 @@ const initialState = {
 
 const conditionsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'UPDATE-CURRENT-CONDITIONS': {
+    case 'UPDATE_CURRENT_CONDITIONS': 
       // console.log('action.conditions', action.conditions);
       return produce(state, draftState => {
         draftState.current = {...action.conditions};
       });
-    };
   
     default:
       return state ;

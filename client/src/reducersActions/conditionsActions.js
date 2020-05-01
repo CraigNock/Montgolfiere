@@ -5,7 +5,7 @@ export const updateCurrentConditions = (conditionsObj) => {
   // console.log('conditionsObj', conditionsObj);
   return (
   {
-    type: 'UPDATE-CURRENT-CONDITIONS',
+    type: 'UPDATE_CURRENT_CONDITIONS',
     conditions: conditionsObj,
   }
   )

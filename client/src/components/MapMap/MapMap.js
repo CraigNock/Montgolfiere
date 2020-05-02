@@ -3,7 +3,7 @@ import styled, {keyframes} from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
-// import L, { Icon } from "leaflet";
+import L, { Icon } from "leaflet";
 // import { DriftMarker } from "leaflet-drift-marker";
 
 import balloon from '../../assets/balloon.svg'
@@ -14,11 +14,14 @@ import { updateCurrentConditions
 } from '../../reducersActions/conditionsActions';
 import fetchConditions from './fetchConditions'
 import findNextLoc from './findNextLoc';
+import nearbyBalloonSync from './nearbyBalloonSync';
 
-// const ballooon = new Icon({
-//   iconUrl: balloon,
-//   iconSize: [25, 25]
-// });
+
+
+const ballooon = new Icon({
+  iconUrl: balloon,
+  iconSize: [15, 15]
+});
 
 
 const MapMap = () => { 
@@ -32,6 +35,7 @@ const MapMap = () => {
 
   const [launch, setLaunch] = useState(false);
   const [anchored, setAnchored] = useState(true);
+  const [nearbyBalloons, setNearbyBalloons] = useState([]);
 
   const [newLoc, setNewLoc] = useState(profile.location);
   // const [currentCenter, setCurrentCenter] = useState(profile.location);
@@ -55,7 +59,8 @@ const MapMap = () => {
       console.log('clean intervals'); 
       clearInterval(freshBreeze);
       clearInterval(checkpoint); 
-      clearInterval(updateDestination)
+      clearInterval(updateDestination);
+      clearInterval(beef);
     };
 // eslint-disable-next-line
   }, []);
@@ -138,11 +143,21 @@ const MapMap = () => {
   }, 10000);
 
 
-//KEEPS BALLOON MARKED CENTERED
-  // const centerMark = () => {
-  //   setCurrentCenter(mapRef.current.viewport.center);//WHY???
-    
-  // };
+
+  const beef = useInterval(async ()=>{
+    // console.log('syncsync');
+    let newBalloons = await nearbyBalloonSync({
+    location: profile.location,
+    bearing: windBearing,
+    displayName: profile.displayName,
+    userId: profile.userId,
+    });
+    setNearbyBalloons(newBalloons) ;
+    console.log('nearbyBalloons', nearbyBalloons);
+  }, 15000);
+
+//kept balloon marker centered (jittery/resource intensive)
+  // const centerMark = () => {setCurrentCenter(mapRef.current.viewport.center)};
 
   return ( 
     <StyledDiv> 
@@ -168,15 +183,6 @@ const MapMap = () => {
           url={`https://tile.thunderforest.com/pioneer/{z}/{x}/{y}.png?apikey=${process.env.REACT_APP_THUNDERFOREST_MAPTILES_KEY}`}
           attribution='&copy; <a href="http://osm.org/copyright">OSM</a> contributors' />
 
-
-
-        {/* <StyledMarker
-          ref={markRef}
-          position={currentCenter} 
-          icon={ballooon}
-        >
-        </StyledMarker> */}
-
         <StyledBalloon src={balloon} />
         
         <StyledButton 
@@ -187,7 +193,6 @@ const MapMap = () => {
           }}
           style={{display: launch? 'none' : 'flex'}}
         >Launch!</StyledButton>
-
         <StyledButton 
           onClick={()=>{
             setLaunch(false);
@@ -197,6 +202,21 @@ const MapMap = () => {
           style={{display: (profile.elevation==1 && !anchored)? 'flex' : 'none'}}
         >Anchor?</StyledButton>
 
+        {( nearbyBalloons.map((balloon) => {
+          return (
+            <Marker
+            key={balloon.userId}
+            position={balloon.location} 
+            icon={ballooon}
+            >
+            </Marker>
+          )
+        }))}
+
+
+        <Marker
+          position={[45.50, -73.60]} 
+          icon={ballooon}></Marker>
         {/* <DriftMarker 
           // ref={markRef} 
           position={newLoc} 

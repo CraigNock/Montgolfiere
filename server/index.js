@@ -4,14 +4,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
+//USER/LOCATION HANDLERS
 const { 
-  getUserProfile, 
+  // getUserProfile, 
   createUserProfile, 
   getLastVector,
-  newLastVector, 
+  newLastVector,
+  syncAllBalloons, 
 } = require('./userHandlers');
 
-const { getConditions, getAddressPosition } = require('./apiHandlers');
+//API HANDLERS//
+const { 
+  getConditions, 
+  getAddressPosition 
+} = require('./apiHandlers');
 
 const PORT = 8000;
 
@@ -42,6 +48,8 @@ express()
 //USER VECTOR ENDPOINTS
   .get('/getLastVector/:userId', getLastVector)
   .put('/newLastVector', newLastVector)
+//GLOBALLY ACCESSIBLE LOCATION ENDPOINTS
+  .post('/syncAllBalloons', syncAllBalloons)
 
 //VICINITY ENDPOINTS
   .post('/api/conditions', getConditions)

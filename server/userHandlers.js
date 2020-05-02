@@ -102,18 +102,26 @@ const createUserProfile = async (req, res) => {
       badges: [],
       achievements: [],
     };
-    
+  //ADDS AN INITIAL lastVector ENTRY
     await db.ref('lastVectors/' + userId).set(
       {
-        email: req.body.email,
         lastActive: Date.now(),
         lastLocation: start.coords,
         lastBearing: 90,
         lastWindSum: 0,
         lastElevation: 0,
+        userId: userId,
       }
     );
-  
+  //ADDS AN INITIAL global location ENTRY
+    await db.ref('allLocations/' + userId).set(
+      {
+        location: start.coords,
+        bearing: 90,
+        displayName: req.body.displayName,
+        userId: userId,
+      }
+    );
   
     db.ref('userProfiles/' + userId).set(newProfile)
       .then(() => {
@@ -152,6 +160,7 @@ const getLastVector = async (req, res) => {
 //   lastElevation: 2,
 // }
 
+// type: PUT
 const newLastVector = async (req, res) => {
   // console.log('newLastVector', req.body);
   try {
@@ -161,11 +170,57 @@ const newLastVector = async (req, res) => {
 };
 
 
+//////////////////////////////////////
+// GET ALL NEARBY BALLOON LOCATIONS // 
+//////////////////////////////////////
+// eg {
+//   location: start.coords,
+//   bearing: 90,
+//   displayName: req.body.displayName,
+//   userId: userId,
+// }
+// updates global balloon position (called within sync function) //
+const updateGlobalPosition = async (newPossie) => {
+  try {
+    await db.ref('allLocations/' + newPossie.userId).set(newPossie); 
+    } catch (err) {console.log('err', err);}
+};
+
+// used to filter for balloons within vision radius of user balloon (.1 radius)//
+const pointInCircle = (center, radius, point) => {
+  const centerY = center[0];
+  const centerX = center[1];
+  const y = point[0];
+  const x = point[1] ; //because long 180 vs lat 90
+  const squareDist = (centerX - x) ** 2 + (centerY - y) ** 2
+    return ( squareDist < (radius ** 2) )
+};
+// type: POST
+const syncAllBalloons = async (req, res) => {
+  await updateGlobalPosition(req.body);
+
+  const allObj = (await queryDatabase('allLocations')) || {};
+  // console.log('allBalloons data ', allObj); 
+  const allArray = Object.keys(allObj)
+    .map((item) => allObj[item])
+    .filter((obj) => ( pointInCircle(req.body.location , 1, obj.location) ) );
+  // console.log('allArray', allArray);
+
+  res.status(200).json({
+    status: 200,
+    data: allArray,
+  })
+};
+
+
+
+
 module.exports = {
   getUserProfile,
   createUserProfile,
   getLastVector,
   newLastVector,
+  syncAllBalloons,
 };
 
 

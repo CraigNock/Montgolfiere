@@ -53,7 +53,7 @@ const OtherBalloons = ({balloons}) => {
     await array.forEach(async (item) => {
       // timeStamp less than 30min old?
       // console.log('item.timeStamp , timeCutoff', item.timeStamp , timeCutoff);
-      const label = (item.timeStamp > timeCutoff)? 
+      const label = (item.timeStamp > timeCutoff && item.elevation < 3)? 
         await markerFilter(location, rangeMin, rangeMax, item.location) 
         : '';
         // console.log('item, label', item, label);
@@ -96,19 +96,22 @@ const OtherBalloons = ({balloons}) => {
         }))}
       {( (viewRange > 1)? nearOuterBalloons.map((balloon) => {
         return (
-          <GrayMark
+          <Marker
           key={balloon.userId}
           position={balloon.location} 
           icon={ballooon33}
           style={{filter: 'grayscale(100%)'}}
+          onClick={()=> {
+            setActiveBalloon(balloon)
+          }}
           >
-          </GrayMark>
+          </Marker>
         )
       }) : '' )}
       
       {( (viewRange > 2)? farBalloons.map((balloon) => {
         return (
-          <GrayMark
+          <Marker
           key={balloon.userId}
           position={balloon.location} 
           icon={ballooon33}
@@ -116,7 +119,7 @@ const OtherBalloons = ({balloons}) => {
             setActiveBalloon(balloon)
           }}
           >
-          </GrayMark>
+          </Marker>
         )
       }) : '' )}
       {activeBalloon && (
@@ -124,11 +127,11 @@ const OtherBalloons = ({balloons}) => {
           position={activeBalloon.location}
           onClose={() => setActiveBalloon(null)}
         >
-          <div>
-            <p>{activeBalloon.userId}</p>
+          <PopContent>
+            <p><StyledButton>Chat</StyledButton></p>
             <p>{activeBalloon.displayName}</p>
-            <p>{activeBalloon.bearing}</p>
-          </div>
+            <p>Bearing: {activeBalloon.bearing}</p>
+          </PopContent>
         </Popup>
       )}
     </>
@@ -143,7 +146,21 @@ const StyledDiv = styled.div`
 
 `;
 
-const GrayMark = styled(Marker)`
-  filter: grayscale(100%);
+const PopContent = styled.div`
 
+  p{
+    margin: 0;
+  }
+`;
+const StyledButton = styled.button`
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.5rem;
+  font-size: .75rem;
+  margin: 0 ;
+  border: 2px solid goldenrod;
+  border-radius: 8px;
+  color: white;
+  background: gray;
 `;

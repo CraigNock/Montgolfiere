@@ -10,8 +10,19 @@ import { toggleLens, setViewRange
 import { GoFlame } from "react-icons/go";
 import { GiFlame } from "react-icons/gi";
 import { GiFire } from "react-icons/gi";
+import { GiGlobe } from "react-icons/gi";
+import { GoTelescope } from "react-icons/go";
+import { GiSextant } from "react-icons/gi";
+import { GiSpyglass } from "react-icons/gi";
+import { IoIosBasket } from "react-icons/io";
 
-import paper from '../../assets/paper.jpg'
+// GiHandheldFan GiSail GiSpyglass GiEmptyHourglass IoIosCog
+//GiKite  GiBurningEmbers GiFireZone GiPulleyHook GiOldLantern
+//GiLibertyWing GiLever GiPadlock AiFillVideoCamera GiMagnifyingGlass
+//GiPaperWindmill GiAnchor GiBatWing GiHourglass FaTelegramPlane
+//GiSextant  GiSpeedometer GiSteampunkGoggles GiWindsock GiWindTurbine
+
+import paper from '../../assets/paper.jpg';
 
 
 const HUD = () => { 
@@ -36,41 +47,40 @@ const HUD = () => {
 
   return (
     <StyledDiv> 
-      <h3> HUD </h3>
       <InfoDiv>
         <p>
           <span>Bearing: </span>
           {windBearing}°
         </p>
         <p>
-          <span>Speed: </span>
-          {parseInt(windSum * 10 * elevation)} kph
+          <span>Velocity: </span>
+          {parseInt(windSum * elevation)}
         </p>
         
       </InfoDiv>
       <ControlsDiv>
+        <span>Elevation</span>
         <FlexDiv>
           <ElevUl>
-            Elevation
-            <li style={{color: (elevation==3)? 'green' : 'slategray'}} >
-              <label htmlFor={'High'}>
-              <input type='radio' name={'High'} value={3} 
+            <li style={{color: (elevation===3)? '#00563f' : 'slategray'}} >
+              <label>
+              <InvisRadio type='radio' name={'High'} value={3} 
               onChange={(e) => handleElevation(e)}
-              checked={(elevation == 3)} />High
+              checked={(elevation === 3)} />High
               </label>
             </li>
-            <li style={{color: (elevation==2)? 'green' : 'slategray'}} >
-              <label htmlFor={'Med'}>
-              <input type='radio' name={'Med'} value={2} 
+            <li style={{color: (elevation===2)? '#00563f' : 'slategray'}} >
+              <label>
+              <InvisRadio type='radio' name={'Med'} value={2} 
               onChange={(e) => handleElevation(e)}
-              checked={(elevation == 2)} />Med
+              checked={(elevation === 2)} />Med
               </label>
             </li>
-            <li style={{color: (elevation==1)? 'green' : 'slategray'}} >
-              <label htmlFor={'Low'}>
-              <input type='radio' name={'Low'} value={1}
+            <li style={{color: (elevation===1)? '#00563f' : 'slategray'}} >
+              <label>
+              <InvisRadio type='radio' name={'Low'} value={1}
               onChange={(e) => handleElevation(e)} 
-              checked={(elevation == 1)} />Low
+              checked={(elevation === 1)} />Low
               </label>
             </li>
             </ElevUl>
@@ -79,73 +89,73 @@ const HUD = () => {
               style={{
                 display: (elevation > 2)? 'block' : 'none',
                 position: 'absolute', 
-                color: 'orange',
+                color: '#ff6700',
                 fontSize: '3rem',
-                marginTop: '-.5rem'
+                marginTop: '-.25rem'
                 }}/>
               <GiFire style={{
                 display: (elevation > 1)? 'block' : 'none',
                 position: 'absolute', 
-                color: 'yellow', 
-                fontSize: '2rem',
-                // bottom: '-10'
+                color: '#f4c430', 
+                fontSize: '2.25rem',
+                marginTop: '.25rem' 
                 }}/>
               <GoFlame style={{
                 position: 'absolute', 
-                color: 'lightblue', 
-                fontSize: '1.5rem', 
-                // bottom: '-11'
+                color: '#4169e1', 
+                fontSize: '1.5rem',
+                marginTop: '.6rem' 
                 }}  />
             </FlameoHotman>
 
         </FlexDiv>
         
+        <span>View range</span>
         <FlexDiv>
           <ViewRange>
-            View range
-            <li style={{color: (viewRange === 3)? 'green' : 'slategray'}}>
-              <label htmlFor={'global'}>
-              <input type='radio' name={'global'} value={3} 
+            <li style={{color: (viewRange === 3)? '#00563f' : 'slategray'}}>
+              <label>
+              <InvisRadio type='radio' name={'global'} value={3} 
               onChange={(e) => handleViewRange(e)}
-              checked={(viewRange === 3)} />Global
+              checked={(viewRange === 3)} />
+              Global
               </label>
             </li>
-            <li style={{color: (viewRange === 2)? 'green' : 'slategray'}}>
-              <label htmlFor={'radius'}>
-              <input type='radio' name={'radius'} value={2} 
+            <li style={{color: (viewRange === 2)? '#00563f' : 'slategray'}}>
+              <label>
+              <InvisRadio type='radio' name={'radius'} value={2} 
               onChange={(e) => handleViewRange(e)}
               checked={(viewRange === 2)} />Radius
               </label>
             </li>
-            <li style={{color: (viewRange === 1)? 'green' : 'slategray'}}>
-              <label htmlFor={'local'}>
-              <input type='radio' name={'local'} value={1}
+            <li style={{color: (viewRange === 1)? '#00563f' : 'slategray'}}>
+              <label>
+              <InvisRadio type='radio' name={'local'} value={1}
               onChange={(e) => handleViewRange(e)} 
               checked={(viewRange === 1)} />Local
               </label>
             </li>
           </ViewRange>
           <ViewCircle>
-            <div style={{
+
+            <GiGlobe style={{
                 display: (viewRange === 3)? 'block' : 'none',
             }}
-            >
-              map
-            </div>
-            <div style={{
+            />
+            <GiSpyglass style={{
                 display: (viewRange === 2)? 'block' : 'none',
             }}
-            >
-              big
-            </div>
-            <div style={{
+            />
+            <IoIosBasket style={{
                 display: (viewRange === 1)? 'block' : 'none',
             }}
-            >
-              small
-            </div>
+            />
+            
           </ViewCircle>
         </FlexDiv>
+
+        <p><span>Items</span></p>
+
         <LensSwitch>
           <span>Lens:</span>
           <StyledButton onClick={ () => dispatch(toggleLens()) }>
@@ -153,81 +163,118 @@ const HUD = () => {
           </StyledButton>
         </LensSwitch>
 
-        <p>equipped items</p>
-        
-        
       </ControlsDiv>
-      <Tag></Tag>
       
     </StyledDiv> 
   ) 
 }; 
 
-
 export default HUD;
-
 
 const StyledDiv = styled.div`
   position: absolute;
   left: 0;
-  top: 3.5rem;
+  top: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: 18vw;
-  /* min-width: fit-content; */
+  /* justify-content: center; */
+  width: 16vw;
+  min-width: fit-content;
+  height: 80vh;
   min-height: 60vh;
   overflow: hidden;
   background-image: url(${paper});
   background-size: cover;
   box-shadow: 5px 5px 20px 5px rgba(0,0,0,0.53);
-  border: 3px solid gray;
-  border-radius: 5px 50% 50% 5px;
+  border: 3px double #836953;
+  border-left: none;
+  /* border-radius: 5px 20% 20% 5px; */
+  border-radius: 5px 3rem 80% 5px;
   opacity: 0.9;
   padding: 1rem;
-  
+  p {
+    font-family: 'Rye', cursive;
+    color: #36454f;
+    /* color: maroon; */
+    margin: .25rem 0;
+    
+  }
+  span{
+    font-family: 'Rye', cursive;
+    /* color: #36454f; */
+    color: black;
+  }
+`;
+const InvisRadio = styled.input`
+  visibility: hidden;
+  margin-left: -1rem;
+`;
+const Toggletab = styled.div`
+  width: .5rem;
+  height: 3rem;
+  background: lightgray;
+  border: 1px solid goldenrod;
+  border-radius: 0 20% 20% 0;
 `;
 const FlexDiv = styled.div`
   display: flex;
-  /* justify-content: space-between; */
+  /* justify-content: space-around; */
+  align-items: center;
   flex-wrap: none;
-`;
-
-const Tag = styled.div`
-  width: 1rem;
-  height: 2rem;
-  z-index: 2;
+  margin-bottom: .5rem;
 `;
 const InfoDiv = styled.div`
-  margin: 2rem 0 0;
+  margin: 0 0 .25rem;
 `;
 const ControlsDiv = styled.div`
-  margin: 0 0;
+  padding: .5rem 0;
+  border-top: 2px solid gray;
 `;
 const ElevUl = styled.ul`
   position: relative;
   display: flex;
   flex-direction: column;
-  margin: .5rem 0;
+  margin: .25rem 0 1rem;
+  padding: 0;
+  font-family: 'Rye', cursive;
+  label {
+    font-family: 'Rye', cursive;
+  }
+  /* color: #36454f; */
+  color: black;
+  
 `;
 const FlameoHotman = styled.div`
   position: relative;
-  margin: 2rem 2rem 0;
+  margin: 0 0 0 1.5rem ;
   display: flex;
   justify-content: center;
   align-items: center;
   color: orange;
-  /* font-size: 2rem; */
+  height: 4rem;
+  width: 3.5rem;
+  background: rgba(0,0,0,0.13);
+  box-shadow: 0 0 20px 5px rgba(0,0,0,0.53), 
+  0 0 10px 2px rgba(0,0,0,0.33)inset;
+  border-radius: 50% 50%;
+  filter: grayscale(40%);
 `;
-const ViewRange = styled.ul`
-  margin: .5rem 0;
+const ViewRange = styled(ElevUl)`
 `;
 const ViewCircle = styled.div`
   position: relative;
-  /* margin: 3rem 0 0 1rem; */
+  margin: 0 0 0 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 2rem;
+  height: fit-content;
+  padding: .35rem;
+  border-radius: 50%;
+  color: #36454f;
+  /* color: #dbd7d2; */
+  box-shadow: 0 0 20px 5px rgba(0,0,0,0.53), 
+  0 0 10px 2px rgba(0,0,0,0.33) inset;
   
 `;
 
@@ -244,4 +291,5 @@ const StyledButton = styled.button`
   border-radius: 10px;
   color: white;
   background: gray;
+  font-family: 'Rye', cursive;
 `;

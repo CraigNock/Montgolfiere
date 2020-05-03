@@ -152,6 +152,7 @@ const MapMap = () => {
   const beef = useInterval(async ()=>{
     // console.log('syncsync');
     let newBalloons = await nearbyBalloonSync({
+    elevation: profile.elevation,
     location: profile.location,
     bearing: windBearing,
     displayName: profile.displayName,
@@ -202,7 +203,7 @@ const MapMap = () => {
             newLeg(false);
           }}
           style={{display: launch? 'none' : 'flex'}}
-        >Launch!</StyledButton>
+        >Launch</StyledButton>
         <StyledButton 
           onClick={()=>{
             setLaunch(false);
@@ -210,7 +211,7 @@ const MapMap = () => {
             newLeg(true);
           }}
           style={{display: (profile.elevation==1 && !anchored)? 'flex' : 'none'}}
-        >Anchor?</StyledButton>
+        >Anchor</StyledButton>
 
         <OtherBalloons balloons={nearbyBalloons} />
 
@@ -253,7 +254,7 @@ const StyledDiv = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 1rem auto 5rem;
+  margin: 1rem auto 1rem;
   height: 60vh;
   width: 60vw;
   border: 8px ridge #da9620;
@@ -287,6 +288,7 @@ const StyledButton = styled.button`
   border-radius: 10px;
   color: white;
   background: gray;
+  font-family: 'Rye', cursive;
 `;
 
 // const Pinpoint = styled.div`

@@ -49,7 +49,7 @@ const userReducer = (state = initialState, action) => {
       });
     case 'CHANGE_ELEVATION': 
       // console.log('state.profile', state.profile);
-      console.log('action.newElevation', action.newElevation);
+      // console.log('action.newElevation', action.newElevation);
       return produce(state, draftState => {
         draftState.profile.elevation = action.newElevation;
       });

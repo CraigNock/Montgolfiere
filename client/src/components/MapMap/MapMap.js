@@ -2,11 +2,13 @@ import React, { useRef, useEffect, useState } from 'react';
 import styled, {keyframes} from 'styled-components'; 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Map, Marker, Popup, TileLayer } from "react-leaflet";
+import { Map, Marker, Popup, TileLayer, AttributionControl } from "react-leaflet";
 import L, { Icon } from "leaflet";
 // import { DriftMarker } from "leaflet-drift-marker";
 
-import balloon from '../../assets/balloon.svg'
+import balloon from '../../assets/balloon.svg';
+// import raindrops from '../../assets/raindrops.png';
+
 import useInterval from '../../hooks/use-interval-hook';
 import { updateLocation 
 } from '../../reducersActions/userActions';
@@ -16,6 +18,8 @@ import fetchConditions from './fetchConditions'
 import findNextLoc from './findNextLoc';
 import nearbyBalloonSync from './nearbyBalloonSync';
 
+import OtherBalloons from './OtherBalloons';
+import LensEffect from './LensEffect';
 
 
 const ballooon = new Icon({
@@ -35,6 +39,7 @@ const MapMap = () => {
 
   const [launch, setLaunch] = useState(false);
   const [anchored, setAnchored] = useState(true);
+
   const [nearbyBalloons, setNearbyBalloons] = useState([]);
 
   const [newLoc, setNewLoc] = useState(profile.location);
@@ -91,9 +96,9 @@ const MapMap = () => {
 
 //KEEPS BALLOON MOVING - Trigged on Launch
 //use findNextLoc on stored speed and bearing with current center then set as newloc
-  const newLeg = async (anchor) => {
-    console.log('newLeg windSum, windBearing', windSum, windBearing);
-    if (!anchor) {
+  const newLeg = async (toggle) => {
+    // console.log('newLeg windSum, windBearing', windSum, windBearing, profile.elevation, launch, anchored);
+    if (!toggle) {
     let newDest = await findNextLoc(
       mapRef.current.viewport.center[0], 
       mapRef.current.viewport.center[1], 
@@ -104,6 +109,7 @@ const MapMap = () => {
     setNewLoc(newDest);
     } else {
       setNewLoc(mapRef.current.viewport.center);
+      return
     }
   }
 
@@ -113,12 +119,12 @@ const MapMap = () => {
   },59000);
 
   useEffect(() => {
-    if(mapRef.current.viewport.center)newLeg();
+    if(mapRef.current.viewport.center && anchored===false)newLeg();
   }, [profile.elevation]);
 
-//STORES BALLOON LOCATION EVERY 10 SECONDS lastVector issue:billion calls
+//STORES BALLOON LOCATION EVERY 10 SECONDS lastVector
   const updateVector = () => {
-    console.log('vector update');
+    // console.log('vector update');
       fetch('/newLastVector', {
         method: 'PUT',
         headers: {
@@ -135,15 +141,14 @@ const MapMap = () => {
         }),
       }).catch(err => {console.log('udv err', err);})
   };
-
   const checkpoint = useInterval(()=>{
     // console.log('int 10s viewcenter', mapRef.current.viewport.center);
-    dispatch(updateLocation([...mapRef.current.viewport.center]));
+    dispatch(updateLocation([...mapRef.current.viewport.center ]));
     updateVector();
   }, 10000);
 
 
-
+//SYNC GLOBAL BALLOON LOCATIONS
   const beef = useInterval(async ()=>{
     // console.log('syncsync');
     let newBalloons = await nearbyBalloonSync({
@@ -151,13 +156,12 @@ const MapMap = () => {
     bearing: windBearing,
     displayName: profile.displayName,
     userId: profile.userId,
+    timeStamp: Date.now(),
     });
     setNearbyBalloons(newBalloons) ;
-    console.log('nearbyBalloons', nearbyBalloons);
+    // console.log('nearbyBalloons', nearbyBalloons);
   }, 15000);
 
-//kept balloon marker centered (jittery/resource intensive)
-  // const centerMark = () => {setCurrentCenter(mapRef.current.viewport.center)};
 
   return ( 
     <StyledDiv> 
@@ -173,6 +177,7 @@ const MapMap = () => {
         scrollWheelZoom={'center'}
         touchZoom={'center'}
         onZoomEnd={()=> setggg(!ggg)}
+        attributionControl={false}
         // onClick={()=>newnew()}
         // onMove={centerMark}
       >
@@ -181,15 +186,20 @@ const MapMap = () => {
           attribution='&copy; <a href="http://osm.org/copyright">OSM</a> contributors' /> */}
         <TileLayer
           url={`https://tile.thunderforest.com/pioneer/{z}/{x}/{y}.png?apikey=${process.env.REACT_APP_THUNDERFOREST_MAPTILES_KEY}`}
-          attribution='&copy; <a href="http://osm.org/copyright">OSM</a> contributors' />
+          attribution='&copy; <a href="http://osm.org/copyright">OSM</a> contributors | Maptiles by Thunderforest' 
+        />
+        <AttributionControl
+          position='bottomright' 
+        />
 
         <StyledBalloon src={balloon} />
         
         <StyledButton 
           onClick={()=>{
-            setLaunch(true);
             setAnchored(false);
-            newLeg();
+            setLaunch(true);
+            console.log('anchored, launch', anchored, launch);
+            newLeg(false);
           }}
           style={{display: launch? 'none' : 'flex'}}
         >Launch!</StyledButton>
@@ -197,26 +207,13 @@ const MapMap = () => {
           onClick={()=>{
             setLaunch(false);
             setAnchored(true)
-            newLeg('anchor');
+            newLeg(true);
           }}
           style={{display: (profile.elevation==1 && !anchored)? 'flex' : 'none'}}
         >Anchor?</StyledButton>
 
-        {( nearbyBalloons.map((balloon) => {
-          return (
-            <Marker
-            key={balloon.userId}
-            position={balloon.location} 
-            icon={ballooon}
-            >
-            </Marker>
-          )
-        }))}
+        <OtherBalloons balloons={nearbyBalloons} />
 
-
-        <Marker
-          position={[45.50, -73.60]} 
-          icon={ballooon}></Marker>
         {/* <DriftMarker 
           // ref={markRef} 
           position={newLoc} 
@@ -225,6 +222,7 @@ const MapMap = () => {
           // keepAtCenter={true}
         ></DriftMarker>  */}
       </Map>
+      <LensEffect/>
     </StyledDiv>
     
   ) 
@@ -255,22 +253,16 @@ const StyledDiv = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0 auto;
+  margin: 1rem auto 5rem;
   height: 60vh;
   width: 60vw;
-  border: 8px ridge goldenrod;
-  border-radius: 10px;
+  border: 8px ridge #da9620;
+  /* border-radius: 10px; */
   box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.53);
-
+  overflow:hidden;
+  border-radius: 25%;
+  
 `;
-
-// const StyledMarker = styled(Marker)`
-//   /* -webkit-transition: transform 3s linear;
-//   -moz-transition: transform 3s linear;
-//   -o-transition: transform 3s linear;
-//   -ms-transition: transform 3s linear;
-//   transition: transform 3s linear;  */
-// `;
 
 //make this it's own component, custom color/balloon
 const StyledBalloon = styled.img`

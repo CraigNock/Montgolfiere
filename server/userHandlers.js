@@ -120,6 +120,7 @@ const createUserProfile = async (req, res) => {
         bearing: 90,
         displayName: req.body.displayName,
         userId: userId,
+        timeStamp: Date.now(),
       }
     );
   
@@ -178,6 +179,7 @@ const newLastVector = async (req, res) => {
 //   bearing: 90,
 //   displayName: req.body.displayName,
 //   userId: userId,
+//   timeStamp: 2342343
 // }
 // updates global balloon position (called within sync function) //
 const updateGlobalPosition = async (newPossie) => {
@@ -191,7 +193,7 @@ const pointInCircle = (center, radius, point) => {
   const centerY = center[0];
   const centerX = center[1];
   const y = point[0];
-  const x = point[1] ; //because long 180 vs lat 90
+  const x = point[1] ; // long 180 vs lat 90??
   const squareDist = (centerX - x) ** 2 + (centerY - y) ** 2
     return ( squareDist < (radius ** 2) )
 };
@@ -203,7 +205,8 @@ const syncAllBalloons = async (req, res) => {
   // console.log('allBalloons data ', allObj); 
   const allArray = Object.keys(allObj)
     .map((item) => allObj[item])
-    .filter((obj) => ( pointInCircle(req.body.location , 1, obj.location) ) );
+    .filter((obj) => ( obj.userId !== req.body.userId ) );
+    // .filter((obj) => ( pointInCircle(req.body.location , 1, obj.location) ) );
   // console.log('allArray', allArray);
 
   res.status(200).json({

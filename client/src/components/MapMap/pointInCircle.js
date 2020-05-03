@@ -1,16 +1,37 @@
 
 
-const pointInCircle = (center, radius, point) => {
-  const centerY = center[0];
-  const centerX = center[1];
-  const y = point[0];
-  const x = point[1] ; // *.5? because long 180 vs lat 90?
-  const squareDist = (centerX - x) ** 2 + (centerY - y) ** 2
-    return ( squareDist < (radius ** 2) )
-};
+// const pointInCircle = (center, radiusMin, radiusMax, point) => {
+//   const centerY = center[0];
+//   const centerX = center[1];
+//   const y = point[0];
+//   const x = point[1] ; // *.5? because long 180 vs lat 90?
+//   const squareDist = (centerX - x) ** 2 + (centerY - y) ** 2
+//     return ( squareDist > (radiusMin ** 2) && squareDist < (radiusMax ** 2) )
+// };
 
 // console.log(pointInCircle(0, 0, 3, -1, -1)); //true
 // console.log(pointInCircle(0, 0, 3, 3, 3)); //false
+
+const pointInCircle = (center, radiusMin, radiusMax, point) => {
+  // console.log('center, radiusMin, radiusMax, point', center, radiusMin, radiusMax, point);
+  const centerY = center[0]; //lat
+  const centerX = center[1]; //long
+  const y = point[0];
+  const x = point[1] ; // *.5? because long 180 vs lat 90?
+  const squareDist = (centerX - x) ** 2 + (centerY - y) ** 2
+//mapped item
+  if ( squareDist > (radiusMin ** 2) && squareDist < (radiusMax ** 2) ) {
+    return 'outer'
+  } else if ( squareDist < (radiusMin ** 2) ) {
+    return 'inner'
+  } else {
+    return 'far'
+  };
+};
+
+
+
+export default pointInCircle;
 
 
 // function arePointsNear(checkPoint, centerPoint, km) {

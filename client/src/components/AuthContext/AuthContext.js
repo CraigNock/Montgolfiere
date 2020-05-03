@@ -46,19 +46,19 @@ const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => {
 
   const handleLastVector = async (lastVector) => {
     let activeDiff = Date.now() - lastVector.lastActive
-    console.log('type', typeof lastVector.lastElevation);
-    console.log('activeDiff', activeDiff, lastVector.lastElevation, lastVector.lastWindSum);
+    // console.log('type', typeof lastVector.lastElevation);
+    // console.log('activeDiff', activeDiff, lastVector.lastElevation, lastVector.lastWindSum);
     activeDiff = (activeDiff < 3600000) ? activeDiff/3600000 : 1;
     const adjustedSpeed = 
       (lastVector.lastWindSum * lastVector.lastElevation) * activeDiff;
-    console.log('adjustedSpeed', adjustedSpeed);
+    // console.log('adjustedSpeed', adjustedSpeed);
     const start = await findNextLoc(
       lastVector.lastLocation[0],
       lastVector.lastLocation[1],
       lastVector.lastBearing,
       adjustedSpeed
     );
-    console.log('start', start);
+    // console.log('start', start);
     return start;
   }
 
@@ -78,17 +78,19 @@ const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => {
       })
         .then((res) => res.json())
         .then((json) => {
-          console.log('json.data', json.data);
+          // console.log('json.data', json.data);
           setCurrentUser(json.data);
           dispatch(updateCurrentUser(json.data));
         //grabs last known vector and updates the starting location
           fetch(`/getLastVector/${json.data.userId}`)
             .then(vector => vector.json())
             .then(last =>{ 
-              console.log('last', last.data);
+              // console.log('last', last.data);
               return handleLastVector(last.data)
             })
-            .then(start => dispatch(updateLocation(start)))
+            .then(start => {
+              if(start) dispatch(updateLocation(start));
+            })
             .then(()=>dispatch(setStatusLogged()))
             
         }).catch(err=> console.log('athfet err', err));

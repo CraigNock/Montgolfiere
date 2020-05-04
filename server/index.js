@@ -4,14 +4,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-//USER/LOCATION HANDLERS
+//DATABASE HANDLERS
 const { 
   // getUserProfile, 
   createUserProfile, 
   getLastVector,
   newLastVector,
-  syncAllBalloons, 
-} = require('./userHandlers');
+  syncAllBalloons,
+  startConversation,
+  sendNewMessage, 
+} = require('./databaseHandlers');
 
 //API HANDLERS//
 const { 
@@ -50,11 +52,12 @@ express()
   .put('/newLastVector', newLastVector)
 //GLOBALLY ACCESSIBLE LOCATION ENDPOINTS
   .post('/syncAllBalloons', syncAllBalloons)
-
 //VICINITY ENDPOINTS
   .post('/api/conditions', getConditions)
   .post('/api/nearest', getNearestCity)
-
+//CHAT ENDPOINTS
+  .post('/newChatMessage', sendNewMessage)
+  .post('/startConversation', startConversation)
 
 
 

@@ -1,35 +1,81 @@
-import React from 'react'; 
+import React, {useEffect, useState} from 'react'; 
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components'; 
+
+import { auth } from "../services/firebase";
+import { db } from "../services/firebase";
 
 import Header from '../../components/Header';
 // import AlertBar from '../../components/AlertBar';
-import MapMap from '../../components/MapMap';
 import HUD from '../../components/HUD';
-import ConditionsDisplay from '../../components/ConditionsDisplay';
+import MapMap from '../../components/MapMap';
 import NearbyDisplay from '../../components/NearbyDisplay';
 // import ImageModal from '../../components/ImageModal';
+import ConditionsDisplay from '../../components/ConditionsDisplay';
+import ChatInterface from '../../components/ChatInterface';
 
-// import ChatInterface from '../../components/ChatInterface';
 // import TradeInterface from '../../components/TradeInterface';
 
-import { useSelector } from 'react-redux';
+import { addChat, setStatusAskChat } from '../../reducersActions/chatActions';
+
 
 
 const Homepage = () => { 
+  const dispatch = useDispatch();
   const { status } = useSelector((state) => state.app);
+  const { userId } = useSelector(state => state.user.profile);
+  const { status, chats } = useSelector(state => state.chat);
   console.log('status', status);
+
+  const getConversation = async (snapshot) => {
+    //get conversation first and make current or whatever then change status
+    fetch(`/getConversation/${snapshot.chatId}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => res.json())
+      .then(convo => {
+        console.log('convo', convo);
+        
+      })
+      .catch(err => {console.log('getconv err', err);})
+  };
+
+  useEffect(()=>{
+    if(status==='logged in'){
+      try{
+        db.ref('conversations').on('child_added', 
+        (snapshot, prevChildKey)=>{
+          if (snapshot.participants.includes(userId)){
+            getConversation(snapshot);
+            dispatch(addChat(snapshot.chatId));
+            dispatch(setStatusAskChat());
+          }
+        })
+      } catch (err) {console.log('err', err);}
+    }
+    return ()=>{}
+  }, [status]);
+
   return (
     <StyledDiv> 
       <Header />
       {(status==='logged in')? 
       <>
       <MainContent>
-      <LeftPanel><HUD/></LeftPanel>
-      <CenterDiv>
-      <MapMap />
-      <BottomPanel><NearbyDisplay/></BottomPanel>
-      </CenterDiv>
-      <RightPanel><ConditionsDisplay/></RightPanel>
+        <LeftPanel>
+          <HUD/>
+        </LeftPanel>
+        <CenterDiv>
+          <MapMap />
+          <BottomPanel><NearbyDisplay/></BottomPanel>
+        </CenterDiv>
+        <RightPanel>
+          {(status !== 'noChat')? <ChatInterface/> : <ConditionsDisplay/>}
+        </RightPanel>
       </MainContent>
       
       </>

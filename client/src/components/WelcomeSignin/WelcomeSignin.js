@@ -38,7 +38,9 @@ const StyledDiv = styled.div`
 `;
 const Intro = styled.div`
   text-align: center;
+  font-family: 'Rye', cursive;
 `;
 const StyledButton = styled.button`
   margin: 2rem;
+  font-family: 'Rye', cursive;
 `;

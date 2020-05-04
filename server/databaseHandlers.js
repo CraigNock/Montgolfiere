@@ -1,13 +1,13 @@
 'use strict';
 
+//RENAME TO DATABASE HANDLERS
+
 const {startingLocations} = require('./data.js');
 
 const randy = (min, max) => { 
     let rand = Math.floor((Math.random()*(max - min)) + min);
     return rand;
   };
-
-
 
 const admin = require('firebase-admin');
 
@@ -217,6 +217,58 @@ const syncAllBalloons = async (req, res) => {
 
 
 
+/////////////////////////
+/// CHAT INTERACTIONS ///
+/////////////////////////
+
+const startConversation = async (req, res) => {
+  const chatId = await db.ref('/conversations').push().key;
+  const newChat = {
+    chatId: chatId,
+    participants: [req.body.userId, req.body.guestId],
+    converstation: [],
+  };
+  db.ref('conversations/' + chatId).set(newChat)
+      .then(() => {
+        res.status(200).json({
+          status: 200,
+          chatId: chatId,
+        });
+      });
+};
+
+const getConversation = async (req, res) => {
+
+};
+
+const sendNewMessage = async (req, res) => {
+  console.log('sendmsg req.body', req.body);
+  try {
+    await db.ref('conversations/' + req.body.chatId).push(req.body);
+    res.status(200).json({
+      status: 200,
+    })
+  } catch (err) {console.log('smsg err', err);}
+};
+
+
+
+
+//db chat structure
+// { chatId : {
+//     chatId: chatId,
+//     participants: [ 
+//       {userId1, displayName1}, 
+//       {userId2, displayName2},
+//     ],
+//     conversation: [
+//       {}, 
+//       {}, 
+//       etc
+//     ],
+//   },
+// }
+
 
 module.exports = {
   getUserProfile,
@@ -224,6 +276,8 @@ module.exports = {
   getLastVector,
   newLastVector,
   syncAllBalloons,
+  startConversation,
+  sendNewMessage,
 };
 
 

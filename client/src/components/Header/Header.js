@@ -19,16 +19,15 @@ const Header = () => {
           Where <span>is</span> my Balloon? 
         </StyledLink>
       </Title>
-      <Settings onMouseLeave={()=>setShowMenu(!showMenu)}>
-        <IconDiv onMouseEnter={()=>setShowMenu(!showMenu)}>
+      <Settings 
+      onMouseLeave={()=>setShowMenu(!showMenu)}
+      onMouseEnter={()=>setShowMenu(!showMenu)}>
+        <IconDiv >
           <Icon icon={cogs} size={30} />
         </IconDiv>
         <Menu style={{display: showMenu? 'flex' : 'none' }}>
           <StyledLink to={'/profile'}>
             Profile
-          </StyledLink>
-          <StyledLink to={'/'}>
-            Settings
           </StyledLink>
           <StyledLink to={'/About'}>
             About
@@ -54,7 +53,7 @@ const StyledBar = styled.div`
   z-index: 2;
   color: whitesmoke;
   background: rgba(0,0,0,.5);
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
   height: 2.5rem;
   opacity: 0;
   transition: opacity 2s;
@@ -66,8 +65,11 @@ const StyledBar = styled.div`
 const Title = styled.div`
   padding: .5rem 1rem;
   /* cursor: context-menu; */
+  font-size: 1.2rem;
+  font-family: 'Fredericka the Great', cursive;
   span{
     font-style: italic;
+    font-family: 'Fredericka the Great', cursive;
   }
 `;
 const Settings = styled.div`
@@ -97,7 +99,7 @@ const Menu = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  background: rgba(0,0,0,.5);
+  background: rgba(0,0,0,.75);
   border-radius: 0 0 0 7px;
   padding: 0 0 .25rem 0;
   &:hover{
@@ -107,6 +109,7 @@ const Menu = styled.div`
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: whitesmoke;
+  font-family: 'Fredericka the Great', cursive;
   padding: .25rem .5rem .25rem .75rem;
   &:hover{
     background: rgba(0,0,0,.25);
@@ -122,7 +125,9 @@ const StyledButton = styled.button`
   text-align: left;
   font-size: .75rem;
   padding-left: .75rem;
+  font-family: 'Fredericka the Great', cursive;
   &:hover{
     background: rgba(0,0,0,.25);
+    cursor: pointer;
   }
 `;

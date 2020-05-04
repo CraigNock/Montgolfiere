@@ -42,14 +42,51 @@ const getConditions = async (req, res) => {
 
 };
 
-const getAddressPosition = async () => {
-//maybe?
+// const getAddressPosition = async () => {
+// //maybe?
+// };
+
+const cityGet = async (lat, lon, range) => {
+  try{
+    let cityData = await request(`http://overpass-api.de/api/interpreter?data=[out:json];node(around:${range},${lat},${lon})["place"="city"];out;`);
+    cityData = JSON.parse(cityData);
+    return cityData;
+  } catch(err) {console.log('error', err)};
 };
+const getNearestCity = async (req, res) => {
+  let position = req.body.currentPosition;
+  let lat = position[0];
+  let lon = position[1];
+  let cities = await cityGet(lat, lon, '10000');
+//
+  if(!cities.elements[0]) cities = await cityGet(lat, lon, '100000');
+  if(!cities.elements[0]) cities = await cityGet(lat, lon, '1000000');
+  if(!cities.elements[0]) cities = await cityGet(lat, lon, '10000000');
+  let cityList = [...cities.elements];
+  
+  cityList.sort((elementA, elementB) => {
+    let a = Math.abs( (lat - elementA.lat) + (lon - elementA.lon) );
+    let b = Math.abs( (lat - elementB.lat) + (lon - elementB.lon) );
+    return a - b;
+  });
+  const cityObj = cityList[0].tags.name? cityList[0] : 'Atlantis';
+  res.status(200).send({
+    status:'200',
+    cityObj:cityObj,
+  })
+};
+//if elements[0] is undefined search again at 100 000m, 1000 000m, 10 000 000m etc (max 20k km (circumferance is 40k km))
+
+//data.elements[0].tags.name
+//data.elements[0].tags.population
+//data.elements[0].lat //use for distance?
+//data.elements[0].lon
+
 
 
 module.exports = {
   getConditions,
-  getAddressPosition,
+  getNearestCity,
 };
 
 

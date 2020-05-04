@@ -16,7 +16,7 @@ const {
 //API HANDLERS//
 const { 
   getConditions, 
-  getAddressPosition 
+  getNearestCity, 
 } = require('./apiHandlers');
 
 const PORT = 8000;
@@ -53,6 +53,7 @@ express()
 
 //VICINITY ENDPOINTS
   .post('/api/conditions', getConditions)
+  .post('/api/nearest', getNearestCity)
 
 
 

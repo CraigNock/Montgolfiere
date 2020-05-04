@@ -7,16 +7,20 @@ import L, { Icon } from "leaflet";
 // import { DriftMarker } from "leaflet-drift-marker";
 
 import balloon from '../../assets/balloon.svg';
+// import goldbig from '../../assets/goldbig.png';
 // import raindrops from '../../assets/raindrops.png';
 
 import useInterval from '../../hooks/use-interval-hook';
 import { updateLocation 
 } from '../../reducersActions/userActions';
-import { updateCurrentConditions 
+import { updateCurrentConditions, updateNearestCity, 
 } from '../../reducersActions/conditionsActions';
-import fetchConditions from './fetchConditions'
+
+import fetchConditions from './fetchConditions';
+import findClosestCity from './findClosestCity';
 import findNextLoc from './findNextLoc';
 import nearbyBalloonSync from './nearbyBalloonSync';
+
 
 import OtherBalloons from './OtherBalloons';
 import LensEffect from './LensEffect';
@@ -46,13 +50,15 @@ const MapMap = () => {
   // const [currentCenter, setCurrentCenter] = useState(profile.location);
   const [ggg, setggg] = useState(false);
 
-//ON MOUNT FETCH CONDITIONS
+//ON MOUNT FETCH CONDITIONS & CLOSEST CITY
   const handleConditions = async () => {
     try {
-      let conno = await fetchConditions(profile.location);
-      console.log('conno', conno);
-      if(conno) dispatch(updateCurrentConditions(conno));
-
+      let conditions = await fetchConditions(profile.location);
+      console.log('conditions', conditions);
+      if(conditions) dispatch( updateCurrentConditions(conditions) );
+      let nearCity = await findClosestCity(profile.location);
+      console.log('nearCity', nearCity);
+      if(nearCity) dispatch( updateNearestCity(nearCity) )
     } catch (err) {
       console.log('handlecond error', err)
     };
@@ -255,10 +261,11 @@ const StyledDiv = styled.div`
   justify-content: center;
   align-items: center;
   margin: 1rem auto 1rem;
-  height: 60vh;
+  /* padding: .5rem; */
+  /* background: gray; */
+  height: 65vh;
   width: 60vw;
-  border: 8px ridge #da9620;
-  /* border-radius: 10px; */
+  border: 15px ridge #b78727;
   box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.53);
   overflow:hidden;
   border-radius: 25%;

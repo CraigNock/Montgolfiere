@@ -4,11 +4,14 @@ import produce from 'immer';
 
 
 const initialState = {
-  current: {"windSum": 16.93,
-  "windBearing": 338,}
+  current: {
+    "windSum": 16.93,
+    "windBearing": 338,
+  },
+  nearestCity: 'Atlantis',
 };
 
-//sample of state
+//sample of current
   //  {
   //   "time": 1584816805, -->sort local time conversion in server using moment
   //   "summary": "Clear",
@@ -40,7 +43,11 @@ const conditionsReducer = (state = initialState, action) => {
       return produce(state, draftState => {
         draftState.current = {...action.conditions};
       });
-  
+    case 'UPDATE_NEAREST_CITY': 
+      // console.log('action.conditions', action.conditions);
+      return produce(state, draftState => {
+        draftState.nearestCity = {...action.nearestCity};
+      });
     default:
       return state ;
   }

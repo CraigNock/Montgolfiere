@@ -5,7 +5,7 @@ import Header from '../../components/Header';
 // import AlertBar from '../../components/AlertBar';
 import MapMap from '../../components/MapMap';
 import HUD from '../../components/HUD';
-// import ConditionsDisplay from '../../components/ConditionsDisplay';
+import ConditionsDisplay from '../../components/ConditionsDisplay';
 import NearbyDisplay from '../../components/NearbyDisplay';
 // import ImageModal from '../../components/ImageModal';
 
@@ -25,10 +25,13 @@ const Homepage = () => {
       <>
       <MainContent>
       <LeftPanel><HUD/></LeftPanel>
-      <MapMap /> 
-      <RightPanel></RightPanel>
+      <CenterDiv>
+      <MapMap />
+      <BottomPanel><NearbyDisplay/></BottomPanel>
+      </CenterDiv>
+      <RightPanel><ConditionsDisplay/></RightPanel>
       </MainContent>
-      <BottomPanel></BottomPanel>
+      
       </>
       : ''}
       
@@ -45,7 +48,7 @@ const StyledDiv = styled.div`
   display: flex;
   flex-direction: column;
   /* justify-content: space-between; */
-  /* height: 100vh; */
+  /* height: 100%; */
 
 `;
 const MainContent = styled.div`
@@ -53,6 +56,7 @@ const MainContent = styled.div`
   flex-wrap: none;
   justify-content: space-between;
   overflow: hidden;
+  height: 100vh;
 `;
 const LeftPanel = styled.div`
   position: relative;
@@ -61,7 +65,8 @@ const LeftPanel = styled.div`
   height: 80vh;
   min-height: 60vh;
   background: transparent;
-  border: 1px solid goldenrod;
+  margin: 1rem 0;
+  /* border: 1px solid goldenrod; */
 `;
 const RightPanel = styled.div`
   position: relative;
@@ -70,16 +75,24 @@ const RightPanel = styled.div`
   height: 80vh;
   min-height: 60vh;
   background: transparent;
-  border: 1px solid goldenrod;
+  margin: 1rem 0;
+  /* border: 1px solid goldenrod; */
 `;
 const BottomPanel = styled.div`
   position: relative;
   /* bottom: 0;
   left: 16vw; */
-  height: 20vh;
-  width: 60vw;
-  right: 0%;
+  height: 25vh;
+  width: 80vw;
+  /* right: 0%; */
   margin: 0 auto;
   background: transparent;
-  border: 1px solid goldenrod;
+  /* border: 1px solid goldenrod; */
+  /* z-index: 200; */
+`;
+const CenterDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 `;

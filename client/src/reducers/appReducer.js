@@ -2,7 +2,7 @@ import produce from 'immer';
 
 
 const initialState = {
-  status: 'awaiting signin',
+  appStatus: 'awaiting signin',
   lens: true,
   viewRange: 1,
 };
@@ -14,17 +14,17 @@ const appReducer = (state = initialState, action) => {
     case 'SET_STATUS_WAITING':
       // console.log('stateAPP', state);
       return produce(state, draftState => {
-        draftState.status = 'awaiting signin';
+        draftState.appStatus = 'awaiting signin';
       });
     case 'SET_STATUS_LOADING':
       // console.log('stateAPP', state);
       return produce(state, draftState => {
-        draftState.status = 'loading';
+        draftState.appStatus = 'loading';
       });
     case 'SET_STATUS_LOGGED':
       // console.log('stateAPP', state);
       return produce(state, draftState => {
-        draftState.status = 'logged in';
+        draftState.appStatus = 'logged in';
       });
     case 'TOGGLE_LENS':
       // console.log('stateAPP', state);

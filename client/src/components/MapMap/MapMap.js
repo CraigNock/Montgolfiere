@@ -54,10 +54,10 @@ const MapMap = () => {
   const handleConditions = async () => {
     try {
       let conditions = await fetchConditions(profile.location);
-      console.log('conditions', conditions);
+      // console.log('conditions', conditions);
       if(conditions) dispatch( updateCurrentConditions(conditions) );
       let nearCity = await findClosestCity(profile.location);
-      console.log('nearCity', nearCity);
+      // console.log('nearCity', nearCity);
       if(nearCity) dispatch( updateNearestCity(nearCity) )
     } catch (err) {
       console.log('handlecond error', err)

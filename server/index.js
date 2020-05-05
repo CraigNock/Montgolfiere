@@ -12,7 +12,9 @@ const {
   newLastVector,
   syncAllBalloons,
   startConversation,
-  sendNewMessage, 
+  sendNewMessage,
+  getConversation, 
+  removeConversation,
 } = require('./databaseHandlers');
 
 //API HANDLERS//
@@ -58,6 +60,8 @@ express()
 //CHAT ENDPOINTS
   .post('/newChatMessage', sendNewMessage)
   .post('/startConversation', startConversation)
+  .get('/getConversation/:chatId', getConversation)
+  .put('/removeConversation/:chatId', removeConversation)
 
 
 

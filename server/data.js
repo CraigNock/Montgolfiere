@@ -15,15 +15,15 @@ const startingLocations = [
 
 const startingSets = [
   { 'Montreal' : {
-    setId: s1,
+    setId: 's1',
     itemIds : [01, 02, 03],
   }},
   { 'Adelaide' : {
-    setId: s2,
+    setId: 's2',
     itemIds : [04, 05, 06],
   }},
   { 'Houston' : {
-    setId: s3,
+    setId: 's3',
     itemIds : [07, 08, 09],
   }},
 ]

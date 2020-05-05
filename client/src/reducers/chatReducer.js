@@ -1,6 +1,6 @@
 import produce from 'immer';
 
-initailState = {
+const initialState = {
   status: 'noChat',
   currentChat: null, //the chat array { chatId : mx54htz, content: [{}, {}, {}] }
   chats: [],
@@ -32,14 +32,14 @@ const chatReducer = (state = initialState, action) => {
         draftState.status = 'inChat';
       });
     case 'CHANGE_CURRENT_CHAT':
-      // console.log('stateChat', state);
+      console.log('action.chat', action.chat);
       return produce(state, draftState => {
         draftState.currentChat = action.chat;
       });
       case 'UPDATE_CURRENT_CHAT':
       // console.log('stateChat', state);
       return produce(state, draftState => {
-        draftState.currentChat.content.push(action.message);
+        draftState.currentChat.converstation.push(action.message);
       });
     case 'ADD_CHAT':
       // console.log('stateChat', state);

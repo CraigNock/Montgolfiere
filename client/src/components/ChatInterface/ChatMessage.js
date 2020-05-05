@@ -7,43 +7,82 @@ import tipSent from '../../assets/tip-sent.svg';
 
 
 // {
-//   id: 'a',
-//   userName: elaine,
-//   body: 'How about you bring me back something?',
-//   timestamp: '11:38',
+// chatId: currentChat.chatId,
+// userId: userId,
+// timeStamp: Date.now(),
+// content: content,
 // },
 
-const ChatMessage = ( message ) => { 
-    const { displayName, userId } = useSelector(state => state.user.profile);
+const ChatMessage = ( {message} ) => { 
+  const { displayName, userId } = useSelector(state => state.user.profile);
 
-
-    console.log(message);
-    
-    if(message.userId !== userId) {
-        
-        return (
-        <div className="chat-message">
-            <p className="user-name">{message.userName}</p>
-            <p className="other-message">
-                {message.body}
-                <img className="other-tip" src={tipRec} alt="speechtip"/>
-            </p>
-            
-        </div>
-    )} else {
-        return (
-        <div className="message-line">
-            <p className="user-message">
-                props.message.body}
-                <img className="user-tip" src="/assets/tip-sent.svg" alt="speechtip"/>
-            </p>
-        </div>
-        )
-    };
-    
+  console.log(message);
+  
+  if(message.userId !== userId) {
+      
+    return (
+      <>
+        <UserName>{message.userId}</UserName>
+        <OtherMess>
+            {message.content}
+            {/* <OtherTip src={tipRec} alt="speechtip"/> */}
+        </OtherMess>
+      </>
+    )
+  } else {
+    return (
+      <MessLine>
+        <UserMess>
+          {message.content}
+          {/* <UserTip src={tipSent} alt="speechtip"/> */}
+        </UserMess>
+      </MessLine>
+    )
+  };
 };
 
 
-
-
 export default ChatMessage;
+
+
+const UserName = styled.p`
+  font-weight: bold;
+  width: 100%;
+  padding-left: .5rem;
+  margin: 0;
+  font-size: .5rem;
+`;
+const UserMess = styled.p`
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  border-radius: 5px;
+  padding: .15rem .5rem;
+  margin: .1rem;
+  font-size: 1rem;
+  font-family: 'Lobster';
+  color: black;
+  background-color: goldenrod;
+  word-wrap: break-word;
+  
+`;
+const OtherMess = styled(UserMess)`
+  background-color: #E9E9EB;
+  
+`;
+const MessLine = styled.div`
+  display: inline-flex;
+  justify-content: flex-end;
+  /* align-items: flex-end; */
+  width: 100%;
+`;
+const UserTip = styled.img`
+  position: absolute;
+  right: -8px;
+  top: .9rem;
+`;
+const OtherTip = styled.img`
+  position: absolute;
+  left: -8px;
+  top: 1.1rem;
+`;

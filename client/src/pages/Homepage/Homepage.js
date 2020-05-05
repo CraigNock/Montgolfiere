@@ -2,8 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components'; 
 
-import { auth } from "../services/firebase";
-import { db } from "../services/firebase";
+import * as firebase from 'firebase';
 
 import Header from '../../components/Header';
 // import AlertBar from '../../components/AlertBar';
@@ -16,16 +15,16 @@ import ChatInterface from '../../components/ChatInterface';
 
 // import TradeInterface from '../../components/TradeInterface';
 
-import { addChat, setStatusAskChat } from '../../reducersActions/chatActions';
+import { addChat, setStatusAskChat, changeCurrentChat } from '../../reducersActions/chatActions';
 
 
 
 const Homepage = () => { 
   const dispatch = useDispatch();
-  const { status } = useSelector((state) => state.app);
-  const { userId } = useSelector(state => state.user.profile);
+  const { appStatus } = useSelector((state) => state.app);
+  const { profile } = useSelector(state => state.user);
   const { status, chats } = useSelector(state => state.chat);
-  console.log('status', status);
+  // console.log('appStatus', appStatus);
 
   const getConversation = async (snapshot) => {
     //get conversation first and make current or whatever then change status
@@ -38,32 +37,36 @@ const Homepage = () => {
     })
       .then(res => res.json())
       .then(convo => {
-        console.log('convo', convo);
-        
+        console.log('convo.data', convo.data);
+        dispatch(changeCurrentChat(convo.data))
       })
       .catch(err => {console.log('getconv err', err);})
   };
 
   useEffect(()=>{
-    if(status==='logged in'){
-      try{
-        db.ref('conversations').on('child_added', 
+    if(appStatus==='logged in'){
+      const beef = async () => {
+        try{
+        firebase.database().ref('conversations').on('child_added', 
         (snapshot, prevChildKey)=>{
-          if (snapshot.participants.includes(userId)){
-            getConversation(snapshot);
-            dispatch(addChat(snapshot.chatId));
+          if (snapshot.val().participants.includes(profile.userId)){
+            console.log('snapshot', snapshot.val());
+            getConversation(snapshot.val());
+            dispatch(addChat(snapshot.val().chatId));
             dispatch(setStatusAskChat());
           }
         })
       } catch (err) {console.log('err', err);}
     }
-    return ()=>{}
-  }, [status]);
+    beef();
+  }
+    return ()=>{firebase.database().ref('conversations').off('child_added')}
+  }, [appStatus]);
 
   return (
     <StyledDiv> 
       <Header />
-      {(status==='logged in')? 
+      {(appStatus==='logged in')? 
       <>
       <MainContent>
         <LeftPanel>

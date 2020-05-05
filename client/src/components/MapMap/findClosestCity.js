@@ -14,7 +14,7 @@ const getClosestCity = async (position, changeNearestCity) => {
     })
     .then(data => data.json())
     .then(data => {
-      console.log('nearcity data ', data);
+      // console.log('nearcity data ', data);
       let nearestCity = data.cityObj;
       return nearestCity;
       })

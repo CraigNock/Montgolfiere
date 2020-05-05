@@ -9,6 +9,8 @@ import L, { Icon } from "leaflet";
 // import pointInCircle from './pointInCircle';
 import markerFilter from './markerfilter';
 
+import { addChat, setStatusAskChat, changeCurrentChat } from '../../reducersActions/chatActions';
+
 import balloon from '../../assets/balloon.svg';
 import balloon2 from '../../assets/Balloon Icons/hot-air-balloon(3).svg';
 import balloon3 from '../../assets/Balloon Icons/hot-air-balloon (8).svg';
@@ -28,20 +30,18 @@ const ballooon33 = new Icon({
 
 //this component will display markers for balloons at different ranges (togglable) may need to limit at higher user count
 const OtherBalloons = ({balloons}) => { 
-
-  const { location } = useSelector((state) => state.user.profile);
+  const dispatch = useDispatch();
+  const { status, currentChat } = useSelector(state => state.chat);
+  const { location, userId } = useSelector((state) => state.user.profile);
   const { viewRange } = useSelector((state) => state.app);
-  // console.log('viewRange', viewRange);
-  // if(balloons.length > 0) console.log('balloons', balloons);
 
+  // if(balloons.length > 0) console.log('balloons', balloons);
+  const [disable, setDisable] = useState(false);
 //to match popups
   const [activeBalloon, setActiveBalloon] = useState(null);
-//all balloons outside radius
-  const [farBalloons, setFarBalloons] = useState([]); 
-//outer-radius balloons
-  const [nearOuterBalloons, setNearOuterBalloons] = useState([]); 
-//interactable inner-radius balloons
-  const [nearInnerBalloons, setNearInnerBalloons] = useState([]); 
+  const [farBalloons, setFarBalloons] = useState([]); //outside radius
+  const [nearOuterBalloons, setNearOuterBalloons] = useState([]); //outer-radius
+  const [nearInnerBalloons, setNearInnerBalloons] = useState([]); //inner-radius
 
   const filterRanges = async (rangeMin, rangeMax, array) => {
     const nearInner = [];
@@ -51,7 +51,6 @@ const OtherBalloons = ({balloons}) => {
     const timeCutoff = (Date.now()) - .5 * 60 * 60 * 1000;
     
     await array.forEach(async (item) => {
-      // timeStamp less than 30min old?
       // console.log('item.timeStamp , timeCutoff', item.timeStamp , timeCutoff);
       const label = (item.timeStamp > timeCutoff && item.elevation < 3)? 
         await markerFilter(location, rangeMin, rangeMax, item.location) 
@@ -81,6 +80,47 @@ const OtherBalloons = ({balloons}) => {
     if(balloons.length > 0)filterRanges(5000, 100000, balloons);
   }, [location])
   
+  useEffect(()=> {
+    if(status === 'noChat') setDisable(false);
+  }, [status])
+
+  const handleRequestChat = async (e) => {
+    e.preventDefault();
+    fetch('/startConversation', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: userId,
+        guestId: activeBalloon.userId,
+      }),
+    }).then(res => res.json())
+      .then(json => {
+        console.log('json', json);
+        dispatch(changeCurrentChat({
+          chatId: json.chatId,
+          converstation: [
+            {
+              chatId: json.chatId,
+              userId: userId,
+              timeStamp: Date.now(),
+              content: 'Chat?',
+            }
+          ],
+        }));
+        dispatch(addChat(json.chatId));
+      })
+      .then(()=>{
+      // console.log('currentChat', currentChat);//null
+        // dispatch(setStatusAskChat())
+        })
+  }
+
+  // useEffect(()=>{
+  //   if(currentChat) dispatch(setStatusAskChat())
+  // }, [currentChat])
 
   return (
     <>
@@ -128,7 +168,14 @@ const OtherBalloons = ({balloons}) => {
           onClose={() => setActiveBalloon(null)}
         >
           <PopContent>
-            <p><StyledButton>Chat</StyledButton></p>
+            <p>
+              <StyledButton
+                disabled={disable}
+                onClick={(e)=> handleRequestChat(e)}
+              >
+                Chat
+              </StyledButton>
+            </p>
             <p>{activeBalloon.displayName}</p>
             <p>Bearing: {activeBalloon.bearing}</p>
           </PopContent>

@@ -226,7 +226,12 @@ const startConversation = async (req, res) => {
   const newChat = {
     chatId: chatId,
     participants: [req.body.userId, req.body.guestId],
-    converstation: [],
+    converstation: [{
+      chatId: chatId,
+      userId: req.body.userId,
+      timeStamp: Date.now(),
+      content: 'Chat?',
+    }],
   };
   db.ref('conversations/' + chatId).set(newChat)
       .then(() => {
@@ -238,20 +243,34 @@ const startConversation = async (req, res) => {
 };
 
 const getConversation = async (req, res) => {
-
+  const { chatId } = req.params;
+  const data = (await queryDatabase('conversations/' + chatId)) || {};
+  res.status(200).json({
+    status:200,
+    data,
+  })
 };
 
 const sendNewMessage = async (req, res) => {
   console.log('sendmsg req.body', req.body);
   try {
-    await db.ref('conversations/' + req.body.chatId).push(req.body);
+    await db.ref('conversations/' + req.body.chatId + '/content').push(req.body);
     res.status(200).json({
       status: 200,
     })
   } catch (err) {console.log('smsg err', err);}
 };
 
+const removeConversation = async (req, res) => {
+  const { chatId } = req.params;
+  try {
+    await db.ref('conversations/' + chatId).set(null);
+    res.status(200).json({
+      status: 200,
+    })
+  } catch (err) {console.log('smsg err', err);}
 
+};
 
 
 //db chat structure
@@ -278,6 +297,8 @@ module.exports = {
   syncAllBalloons,
   startConversation,
   sendNewMessage,
+  getConversation,
+  removeConversation,
 };
 
 

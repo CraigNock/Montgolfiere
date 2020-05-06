@@ -32,7 +32,7 @@ const ballooon33 = new Icon({
 const OtherBalloons = ({balloons}) => { 
   const dispatch = useDispatch();
   const { status, currentChat } = useSelector(state => state.chat);
-  const { location, userId } = useSelector((state) => state.user.profile);
+  const { location, userId, displayName } = useSelector((state) => state.user.profile);
   const { viewRange } = useSelector((state) => state.app);
 
   // if(balloons.length > 0) console.log('balloons', balloons);
@@ -77,7 +77,7 @@ const OtherBalloons = ({balloons}) => {
   }
 
   useEffect(()=> {
-    if(balloons.length > 0)filterRanges(5000, 100000, balloons);
+    if(balloons && balloons.length > 0)filterRanges(5000, 100000, balloons);
   }, [location])
   
   useEffect(()=> {
@@ -86,6 +86,7 @@ const OtherBalloons = ({balloons}) => {
 
   const handleRequestChat = async (e) => {
     e.preventDefault();
+    setDisable(true);
     fetch('/startConversation', {
       method: 'POST',
       headers: {
@@ -94,33 +95,28 @@ const OtherBalloons = ({balloons}) => {
       },
       body: JSON.stringify({
         userId: userId,
+        // displayName: displayName,
         guestId: activeBalloon.userId,
+        // guestName: activeBalloon.displayName,
       }),
     }).then(res => res.json())
       .then(json => {
         console.log('json', json);
         dispatch(changeCurrentChat({
           chatId: json.chatId,
-          converstation: [
-            {
-              chatId: json.chatId,
-              userId: userId,
-              timeStamp: Date.now(),
-              content: 'Chat?',
-            }
+          conversation: [
+            // {
+              // chatId: json.chatId,
+              // userId: userId,
+              // timeStamp: Date.now(),
+              // content: 'Chat?',
+            // }
           ],
         }));
-        dispatch(addChat(json.chatId));
+        dispatch(addChat(json.chatId)); //status change to ask?
       })
-      .then(()=>{
-      // console.log('currentChat', currentChat);//null
-        // dispatch(setStatusAskChat())
-        })
-  }
-
-  // useEffect(()=>{
-  //   if(currentChat) dispatch(setStatusAskChat())
-  // }, [currentChat])
+  };
+  
 
   return (
     <>
@@ -210,4 +206,7 @@ const StyledButton = styled.button`
   border-radius: 8px;
   color: white;
   background: gray;
+  &:disabled{
+    filter: grayscale(100%);
+  };
 `;

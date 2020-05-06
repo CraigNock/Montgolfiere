@@ -15,7 +15,7 @@ import ChatInterface from '../../components/ChatInterface';
 
 // import TradeInterface from '../../components/TradeInterface';
 
-import { addChat, setStatusAskChat, changeCurrentChat } from '../../reducersActions/chatActions';
+import { addChat, setStatusAskChat, setStatusNoChat, changeCurrentChat } from '../../reducersActions/chatActions';
 
 
 
@@ -45,23 +45,49 @@ const Homepage = () => {
 
   useEffect(()=>{
     if(appStatus==='logged in'){
-      const beef = async () => {
+      const listenForChats = async () => {
         try{
-        firebase.database().ref('conversations').on('child_added', 
-        (snapshot, prevChildKey)=>{
-          if (snapshot.val().participants.includes(profile.userId)){
-            console.log('snapshot', snapshot.val());
-            getConversation(snapshot.val());
-            dispatch(addChat(snapshot.val().chatId));
-            dispatch(setStatusAskChat());
-          }
-        })
-      } catch (err) {console.log('err', err);}
+          firebase.database().ref('conversations').on('child_added', 
+          (snapshot, prevChildKey)=>{
+            if (snapshot.val().participants.includes(profile.userId)){
+              console.log('snapshot', snapshot.val());
+              getConversation(snapshot.val());
+              dispatch(addChat(snapshot.val().chatId));
+              dispatch(setStatusAskChat());
+            }
+          })
+        } catch (err) {console.log('err', err);}
+      };
+      listenForChats();
     }
-    beef();
-  }
-    return ()=>{firebase.database().ref('conversations').off('child_added')}
+    return ()=>{
+      // console.log('conversation added .off');
+      // firebase.database().ref('conversations').off('child_added');
+    }
   }, [appStatus]);
+
+  useEffect(()=> {
+    if(status !== 'noChat'){
+      const listenForChatEnd = async () => {
+        try{
+          firebase.database().ref('conversations').on('child_removed', 
+          (snapshot, prevChildKey)=>{
+            if (snapshot.val().participants.includes(profile.userId)){
+              // console.log('snapshot', snapshot.val());
+              dispatch(setStatusNoChat());
+              dispatch( changeCurrentChat(null) );
+            }
+          })
+        } catch (err) {console.log('err', err);}
+      };
+      listenForChatEnd();
+    }
+    return () => {
+      firebase.database().ref('conversations').off('child_removed', (snapshot) => {})
+    }
+  }, [status]);
+
+
 
   return (
     <StyledDiv> 

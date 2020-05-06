@@ -222,16 +222,19 @@ const syncAllBalloons = async (req, res) => {
 /////////////////////////
 
 const startConversation = async (req, res) => {
+  console.log('create convo');
   const chatId = await db.ref('/conversations').push().key;
   const newChat = {
     chatId: chatId,
     participants: [req.body.userId, req.body.guestId],
-    converstation: [{
-      chatId: chatId,
-      userId: req.body.userId,
-      timeStamp: Date.now(),
-      content: 'Chat?',
-    }],
+    conversation: [
+      // {
+      // chatId: chatId,
+      // userId: req.body.userId,
+      // timeStamp: Date.now(),
+      // content: 'Chat?',
+    // }
+  ],
   };
   db.ref('conversations/' + chatId).set(newChat)
       .then(() => {
@@ -243,8 +246,11 @@ const startConversation = async (req, res) => {
 };
 
 const getConversation = async (req, res) => {
+  console.log('get convo');
   const { chatId } = req.params;
   const data = (await queryDatabase('conversations/' + chatId)) || {};
+  console.log('get conv data', data);
+  if(data.conversation) data.conversation = Object.values(data.conversation);
   res.status(200).json({
     status:200,
     data,
@@ -254,7 +260,7 @@ const getConversation = async (req, res) => {
 const sendNewMessage = async (req, res) => {
   console.log('sendmsg req.body', req.body);
   try {
-    await db.ref('conversations/' + req.body.chatId + '/content').push(req.body);
+    await db.ref('conversations/' + req.body.chatId + '/conversation').push(req.body);
     res.status(200).json({
       status: 200,
     })
@@ -262,6 +268,7 @@ const sendNewMessage = async (req, res) => {
 };
 
 const removeConversation = async (req, res) => {
+  console.log('remove convo');
   const { chatId } = req.params;
   try {
     await db.ref('conversations/' + chatId).set(null);

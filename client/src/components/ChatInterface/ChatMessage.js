@@ -16,26 +16,30 @@ import tipSent from '../../assets/tip-sent.svg';
 const ChatMessage = ( {message} ) => { 
   const { displayName, userId } = useSelector(state => state.user.profile);
 
-  console.log(message);
+  // console.log(message);
   
   if(message.userId !== userId) {
       
     return (
       <>
-        <UserName>{message.userId}</UserName>
+        <UserName>{message.displayName}</UserName>
         <OtherMess>
             {message.content}
             {/* <OtherTip src={tipRec} alt="speechtip"/> */}
         </OtherMess>
+        <Time>{message.timeStamp}</Time>
       </>
     )
   } else {
     return (
       <MessLine>
-        <UserMess>
-          {message.content}
-          {/* <UserTip src={tipSent} alt="speechtip"/> */}
-        </UserMess>
+        <Stacker>
+          <UserMess>
+            {message.content}
+            {/* <UserTip src={tipSent} alt="speechtip"/> */}
+          </UserMess>
+          <Time>{message.timeStamp}</Time>
+        </Stacker>
       </MessLine>
     )
   };
@@ -52,6 +56,11 @@ const UserName = styled.p`
   margin: 0;
   font-size: .5rem;
 `;
+const Time = styled.p`
+  font-size: .5rem;
+  margin: 0;
+  color: lightgray;
+`;
 const UserMess = styled.p`
   position: relative;
   display: inline-block;
@@ -60,10 +69,13 @@ const UserMess = styled.p`
   padding: .15rem .5rem;
   margin: .1rem;
   font-size: 1rem;
-  font-family: 'Lobster';
+  font-weight: bold;
+  font-family: 'Marck Script';
   color: black;
   background-color: goldenrod;
   word-wrap: break-word;
+
+  /* flex: none; */
   
 `;
 const OtherMess = styled(UserMess)`
@@ -75,6 +87,11 @@ const MessLine = styled.div`
   justify-content: flex-end;
   /* align-items: flex-end; */
   width: 100%;
+`;
+const Stacker = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 `;
 const UserTip = styled.img`
   position: absolute;

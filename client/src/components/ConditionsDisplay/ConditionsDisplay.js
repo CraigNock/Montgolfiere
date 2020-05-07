@@ -61,18 +61,18 @@ const StyledDiv = styled.div`
   flex-direction: column;
   align-items: flex-end;
   width: 15vw;
-  min-width: fit-content;
+  /* min-width: fit-content; */
   height: 80vh;
   min-height: 60vh;
   overflow: hidden;
-  background-image: url(${paper});
+  /* background-image: url(${paper});
   background-size: cover;
+  opacity: 0.9; */
   box-shadow: 0 0 10px 3px rgba(0,0,0,0.43);
   border: 3px solid #674c47;
   border-right: none;
   /* border-radius: 5px 20% 20% 5px; */
   border-radius: 3rem 5px 5px 80%;
-  opacity: 0.9;
   padding: 1rem;
   
 `;

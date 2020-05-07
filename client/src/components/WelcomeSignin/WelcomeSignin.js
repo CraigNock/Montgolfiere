@@ -3,6 +3,9 @@ import styled from 'styled-components';
 
 import { AuthContext } from '../AuthContext/AuthContext';
 
+import parchment2 from '../../assets/parchment2.png';
+
+
 const WelcomeSignin = () => { 
   const { signInWithGoogle } = React.useContext(AuthContext);
 
@@ -32,7 +35,12 @@ const StyledDiv = styled.div`
   align-items: center;
   justify-content: center;
   padding: 3rem;
-  background: whitesmoke;
+  background-image: url(${parchment2});
+  opacity: 0.9;
+  
+  background-size: cover;
+  /* background: whitesmoke; */
+  border: 10px ridge peru;
   border-radius: 10px;
   color: black;
 `;
@@ -43,6 +51,15 @@ const Intro = styled.div`
   }
 `;
 const StyledButton = styled.button`
+  font-family: 'Rye', cursive;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 5rem;
   margin: 2rem;
+  border: 2px solid goldenrod;
+  border-radius: 10px;
+  color: white;
+  background: gray;
   font-family: 'Rye', cursive;
 `;

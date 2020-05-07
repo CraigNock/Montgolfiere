@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+import {format} from 'date-fns';
+
+
 
 import tipRec from '../../assets/tip-received.svg';
 import tipSent from '../../assets/tip-sent.svg';
@@ -27,7 +30,7 @@ const ChatMessage = ( {message} ) => {
             {message.content}
             {/* <OtherTip src={tipRec} alt="speechtip"/> */}
         </OtherMess>
-        <Time>{message.timeStamp}</Time>
+        <Time>{format(message.timeStamp, 'hh:mm')}</Time>
       </>
     )
   } else {
@@ -38,7 +41,7 @@ const ChatMessage = ( {message} ) => {
             {message.content}
             {/* <UserTip src={tipSent} alt="speechtip"/> */}
           </UserMess>
-          <Time>{message.timeStamp}</Time>
+          <Time>{format(message.timeStamp, 'hh:mm')}</Time>
         </Stacker>
       </MessLine>
     )
@@ -57,9 +60,11 @@ const UserName = styled.p`
   font-size: .5rem;
 `;
 const Time = styled.p`
-  font-size: .5rem;
-  margin: 0;
+  font-size: .6rem;
+  margin: 0 .5rem;
   color: lightgray;
+  padding: 0;
+  /* font-weight: bold; */
 `;
 const UserMess = styled.p`
   position: relative;

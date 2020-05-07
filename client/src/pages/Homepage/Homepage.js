@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import * as firebase from 'firebase';
 
 import Header from '../../components/Header';
+import MultiModal from '../../components/MultiModal';
 // import AlertBar from '../../components/AlertBar';
 import HUD from '../../components/HUD';
 import MapMap from '../../components/MapMap';
@@ -17,6 +18,7 @@ import ChatInterface from '../../components/ChatInterface';
 
 import { addChat, setStatusAskChat, setStatusNoChat, changeCurrentChat } from '../../reducersActions/chatActions';
 
+import paper from '../../assets/paper.jpg';
 
 
 const Homepage = () => { 
@@ -96,17 +98,19 @@ const Homepage = () => {
       <>
       <MainContent>
         <LeftPanel>
+          <LeftBackground/>
           <HUD/>
         </LeftPanel>
         <CenterDiv>
           <MapMap />
-          <BottomPanel><NearbyDisplay/></BottomPanel>
+          <BottomPanel><BottomBackground/><NearbyDisplay/></BottomPanel>
         </CenterDiv>
         <RightPanel>
-          {(status !== 'noChat')? <ChatInterface/> : <ConditionsDisplay/>}
+          {(status !== 'noChat')? <ChatInterface/> 
+          : <><RightBackground/><ConditionsDisplay/></>}
         </RightPanel>
       </MainContent>
-      
+      <MultiModal/>
       </>
       : ''}
       
@@ -143,6 +147,26 @@ const LeftPanel = styled.div`
   margin: 1rem 0;
   /* border: 1px solid goldenrod; */
 `;
+const LeftBackground = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  width: 15vw;
+  height: 80vh;
+  min-height: 60vh;
+  overflow: hidden;
+  background-image: url(${paper});
+  background-size: cover;
+  /* box-shadow: 0 0 10px 3px rgba(0,0,0,0.43); */
+  /* border: 3px solid #674c47; */
+  border-left: none;
+  /* border-radius: 5px 20% 20% 5px; */
+  border-radius: 5px 3rem 80% 5px;
+  opacity: 0.9;
+  padding: 1rem;
+`;
 const RightPanel = styled.div`
   position: relative;
   width: 16vw;
@@ -152,6 +176,27 @@ const RightPanel = styled.div`
   background: transparent;
   margin: 1rem 0;
   /* border: 1px solid goldenrod; */
+`;
+const RightBackground = styled.div`
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  width: 15vw;
+  height: 80vh;
+  min-height: 60vh;
+  overflow: hidden;
+  background-image: url(${paper});
+  background-size: cover;
+  /* box-shadow: 0 0 10px 3px rgba(0,0,0,0.43); */
+  /* border: 3px solid #674c47; */
+  border-right: none;
+  /* border-radius: 5px 20% 20% 5px; */
+  border-radius: 3rem 5px 5px 80%;
+  opacity: 0.9;
+  padding: 1rem;
 `;
 const BottomPanel = styled.div`
   position: relative;
@@ -164,6 +209,27 @@ const BottomPanel = styled.div`
   background: transparent;
   /* border: 1px solid goldenrod; */
   /* z-index: 200; */
+`;
+const BottomBackground = styled.div`
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items:center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-image: url(${paper});
+  background-size: cover;
+  /* box-shadow: 0 0 20px 5px rgba(0,0,0,0.33); */
+  /* border: 3px solid #674c47; */
+  border-bottom: none;
+  /* border-radius: 5px 20% 20% 5px; */
+  border-radius: 80% 80% 5px 5px;
+  opacity: 0.9;
+  padding: 1rem;
 `;
 const CenterDiv = styled.div`
   display: flex;

@@ -21,15 +21,12 @@ import findClosestCity from './findClosestCity';
 import findNextLoc from './findNextLoc';
 import nearbyBalloonSync from './nearbyBalloonSync';
 
-
 import OtherBalloons from './OtherBalloons';
 import LensEffect from './LensEffect';
 
-
-const ballooon = new Icon({
-  iconUrl: balloon,
-  iconSize: [15, 15]
-});
+// const ballooon = new Icon({
+//   iconUrl: balloon,
+//   iconSize: [15, 15]});
 
 
 const MapMap = () => { 

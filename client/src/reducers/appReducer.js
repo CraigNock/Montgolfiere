@@ -5,6 +5,8 @@ const initialState = {
   appStatus: 'awaiting signin',
   lens: true,
   viewRange: 1,
+  modalToggle: false,
+  modalValue: 'profile',
 };
 //status'= 'awaiting signin' , 'loading' , 'logged in'
 //viewRange = 'global', 'radius', 'local'
@@ -35,6 +37,16 @@ const appReducer = (state = initialState, action) => {
       // console.log('stateAPP', state);
       return produce(state, draftState => {
         draftState.viewRange = action.view;
+      });
+    case 'TOGGLE_MODAL':
+      // console.log('stateAPP', state);
+      return produce(state, draftState => {
+        draftState.modalToggle = !state.modalToggle;
+      });
+    case 'SET_MODAL_VALUE':
+      // console.log('stateAPP', state);
+      return produce(state, draftState => {
+        draftState.modalValue = action.modalValue;
       });
     default:
       return state ;

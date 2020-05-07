@@ -16,7 +16,7 @@ const fetchConditions = async (position) => {
     })
       .then(data => data.json())
       .then(data => {
-        // console.log('fetched conditions ', data.conditions.currently);
+        console.log('fetched conditions ', data.conditions);
         // console.log('windSpeed ', data.conditions.currently.windSpeed);
         let currentConditions = data.conditions.currently;
         return currentConditions;

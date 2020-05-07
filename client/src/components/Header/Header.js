@@ -1,15 +1,29 @@
 import React from 'react'; 
 import styled from 'styled-components'; 
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 // import { GrSettingsOption } from "react-icons/gr";
 import Icon from 'react-icons-kit';
 import {cogs} from 'react-icons-kit/icomoon/cogs'
 
 import { AuthContext } from '../AuthContext/AuthContext';
 
+import { toggleModal, setModalValue } 
+from '../../reducersActions/appActions';
+
+
 const Header = () => { 
+  const dispatch= useDispatch();
   const { currentUser, handleSignOut } = React.useContext(AuthContext);
   const [showMenu, setShowMenu] = React.useState(false);
+
+  const { modalToggle, modalValue } = useSelector(state => state.app);
+
+  const modalHandle = () => {
+    if(modalValue !== 'profile') dispatch(setModalValue('profile'));
+    // setShowMenu(false);
+    dispatch(toggleModal());
+  };
 
 
   return (
@@ -26,9 +40,9 @@ const Header = () => {
           <Icon icon={cogs} size={30} />
         </IconDiv>
         <Menu style={{display: showMenu? 'flex' : 'none' }}>
-          <StyledLink to={'/profile'}>
+          <ProButton onClick={()=> modalHandle()}>
             Profile
-          </StyledLink>
+          </ProButton>
           <StyledLink to={'/About'}>
             About
           </StyledLink>
@@ -113,6 +127,20 @@ const StyledLink = styled(Link)`
   padding: .25rem .5rem .25rem .75rem;
   &:hover{
     background: rgba(0,0,0,.25);
+  }
+`;
+const ProButton = styled.button`
+  color: whitesmoke;
+  font-family: 'Fredericka the Great', cursive;
+  padding: .25rem .5rem .25rem .75rem;
+  border: none;
+  background: none;
+  color: whitesmoke;
+  text-align: left;
+  font-size: 1rem;
+  &:hover{
+    background: rgba(0,0,0,.25);
+    cursor: pointer;
   }
 `;
 const StylishSpace = styled.div`

@@ -35,6 +35,7 @@ const initialState = {
   //   "ozone": 405.9
   //  }
 
+  //icon values : clear-day, clear-night, rain, snow, sleet, wind, fog, cloudy, partly-cloudy-day, or partly-cloudy-night.
 
 const conditionsReducer = (state = initialState, action) => {
   switch (action.type) {

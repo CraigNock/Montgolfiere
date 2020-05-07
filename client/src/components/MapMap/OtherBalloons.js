@@ -12,8 +12,8 @@ import markerFilter from './markerfilter';
 import { addChat, setStatusAskChat, changeCurrentChat } from '../../reducersActions/chatActions';
 
 import balloon from '../../assets/balloon.svg';
-import balloon2 from '../../assets/Balloon Icons/hot-air-balloon(3).svg';
-import balloon3 from '../../assets/Balloon Icons/hot-air-balloon (8).svg';
+import balloon2 from '../../assets/Balloon Icons/hot-air-balloon (6).svg';
+import balloon3 from '../../assets/Balloon Icons/hot-air-balloon (20).svg';
 
 const ballooon = new Icon({
   iconUrl: balloon,
@@ -21,11 +21,11 @@ const ballooon = new Icon({
 });
 const ballooon22 = new Icon({
   iconUrl: balloon2,
-  iconSize: [15, 15]
+  iconSize: [25, 25]
 });
 const ballooon33 = new Icon({
   iconUrl: balloon3,
-  iconSize: [15, 15]
+  iconSize: [25, 25]
 });
 
 //this component will display markers for balloons at different ranges (togglable) may need to limit at higher user count
@@ -192,7 +192,8 @@ const StyledDiv = styled.div`
 const PopContent = styled.div`
 
   p{
-    margin: 0;
+    margin: .25rem 0 0 0;
+    font-family: 'Rye', cursive;
   }
 `;
 const StyledButton = styled.button`

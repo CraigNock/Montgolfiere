@@ -228,6 +228,7 @@ const ChatWindow = styled.div`
   overflow-X: hidden;
   border-radius: 5px;
   padding: .5rem 0;
+  margin-top: .25rem;
   word-break: break-word;
   scrollbar-width: thin;
   &::-webkit-scrollbar {

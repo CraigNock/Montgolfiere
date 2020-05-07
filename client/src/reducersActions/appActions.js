@@ -29,3 +29,16 @@ export const setViewRange = (newView) => (
     view: newView,
   }
 );
+
+//MODAL 
+export const toggleModal = () => (
+  {
+    type: 'TOGGLE_MODAL',
+  }
+);
+export const setModalValue = (newValue) => (
+  {
+    type: 'SET_MODAL_VALUE',
+    modalValue: newValue,
+  }
+);

@@ -1,21 +1,41 @@
 import React from 'react'; 
 import styled, {keyframes} from 'styled-components'; 
-
+import { useSelector } from 'react-redux';
 
 
 
 const Cloud = ( props ) => { 
+  const { current } = useSelector( state => state.conditions);
   // console.log('props', props.speed);
-
+  let tinto = 'whitesmoke';
+  let lining = 'lightgray';
+  if(current.icon && 
+    (current.icon === 'rain' 
+    || current.icon === 'clear-night'
+    || current.icon === 'partly-cloudy-night'
+    || current.icon === 'snow'
+    || current.icon === 'sleet'
+    || current.icon === 'thunderstorm'
+    )) {
+      tinto = 'lightgray';
+      lining = 'whitesmoke';
+    }
   return (
     <StyledDiv style={{transform: `scale(${props.scale})`}} speed={`${props.speed}`} > 
-      <Puff1 />
-      <Puff2 />
-      <Puff3 />
-      <Puff4 />
-      <Puff5 />
-      <Puff6 />
-      <Puff7 />
+      <Puff1 
+      style={{background: `${tinto}`, borderColor: `${lining}`}}/>
+      <Puff2 
+      style={{background: `${tinto}`, borderColor: `${lining}`}}/>
+      <Puff3 
+      style={{background: `${tinto}`, borderColor: `${lining}`}}/>
+      <Puff4 
+      style={{background: `${tinto}`, borderColor: `${lining}`}}/>
+      <Puff5 
+      style={{background: `${tinto}`, borderColor: `${lining}`}}/>
+      <Puff6 
+      style={{background: `${tinto}`, borderColor: `${lining}`}}/>
+      <Puff7 
+      style={{background: `${tinto}`, borderColor: `${lining}`}}/>
     </StyledDiv> 
   ) 
 }; 
@@ -45,7 +65,7 @@ const StyledDiv = styled.div`
   animation: ${cloudStrafe} ${(props) => props.speed}s linear infinite ;
 `;
 const Puff1 = styled.div`
-  background: whitesmoke;
+  /* background: whitesmoke; */
   position: absolute;
   bottom: 1.5rem;
   left: 1rem;

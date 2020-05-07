@@ -1,7 +1,10 @@
-
+import React, { useRef, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { createGlobalStyle } from 'styled-components';
 
-export default createGlobalStyle`
+
+
+const GlobalStyleGlobal = createGlobalStyle`
   *,
   *:before,
   *:after {
@@ -64,7 +67,10 @@ export default createGlobalStyle`
     min-width: 1000px;
     min-height: 700px;
     /* background: #2980b9; */
-    background: linear-gradient(180deg, rgba(0,122,235,1) 0%, rgba(157,207,255,1) 83%);
+    background: 
+    linear-gradient(180deg, 
+      rgba(0,122,235,1) 0%, 
+    rgba(157,207,255,1) 83%);
     overflow: hidden;
     color: whitesmoke;
     font-family: 'Poppins', sans-serif;
@@ -82,3 +88,6 @@ export default createGlobalStyle`
 
 
 `;
+
+
+export default GlobalStyleGlobal;

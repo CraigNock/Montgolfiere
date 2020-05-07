@@ -179,20 +179,18 @@ const StyledDiv = styled.div`
   flex-direction: column;
   /* justify-content: center; */
   width: 15vw;
-  min-width: fit-content;
+  /* min-width: fit-content; */
   height: 80vh;
   min-height: 60vh;
   overflow: hidden;
-  /* background:  */
-    /* linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(${paper}); */
-  background-image: url(${paper});
-  background-size: cover;
+  /* background-image: url(${paper}); */
+  /* background-size: cover; */
+  /* opacity: 0.9; */
   box-shadow: 0 0 10px 3px rgba(0,0,0,0.43);
   border: 3px solid #674c47;
   border-left: none;
   /* border-radius: 5px 20% 20% 5px; */
   border-radius: 5px 3rem 80% 5px;
-  opacity: 0.9;
   padding: 1rem;
   p {
     font-family: 'Rye', cursive;

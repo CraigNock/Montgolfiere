@@ -44,6 +44,10 @@ const queryDatabase = async (key) => {
   return data;
 };
 
+////////////////////////////////////
+//// USER/PROFILE ENDPOINTS ////////
+////////////////////////////////////
+
 //checks the db for the signed in user profile, returns false if doesn't exist yet. Maps through subdata to find match for email input
 //type:GET
 const getUserProfile = async (email) => { 
@@ -89,7 +93,7 @@ const createUserProfile = async (req, res) => {
       userId: userId,
       location: start.coords,
       elevation: 1,
-      // lastActive: null,
+      balloonIcon: 18,
       items: [],
       upgrades: [],
       treasureMaps: {},
@@ -136,13 +140,29 @@ const createUserProfile = async (req, res) => {
   }
 };
 
+// type: CALLED IN NEWVECTOR
+const changeProfileLocation = async (userId, newLocation) => {
+  try {
+    await db.ref('userProfiles/' + userId + '/location').set(newLocation);
+    // res.status(204).json({status:204}); //fixed with json (.status doesnt actually send, needs a .send or .json)
+    } catch (err) {console.log('err', err);}
+};
+
+// type: PUT
+const changeBalloonIcon = async (req, res) => {
+  try {
+    await db.ref('userProfiles/' + req.body.userId + '/balloonIcon').set(req.body.newBalloon);
+    // res.status(204).json({status:204}); //fixed with json (.status doesnt actually send, needs a .send or .json)
+    } catch (err) {console.log('err', err);}
+};
+
 /////////////////////////////////////////////
 //LAST VECTOR 
 /////////////////////////////////////////////
 
 // type: GET
 const getLastVector = async (req, res) => {
-  console.log('getLastVector');
+  // console.log('getLastVector');
   const { userId } = req.params
   const data = (await queryDatabase('lastVectors/' + userId)) || {};
   res.status(200).json({
@@ -166,6 +186,7 @@ const newLastVector = async (req, res) => {
   // console.log('newLastVector', req.body);
   try {
   await db.ref('lastVectors/' + req.body.userId).set(req.body);
+  await changeProfileLocation(req.body.userId, req.body.lastLocation);
   res.status(204).json({status:204}); //fixed with json (.status doesnt actually send, needs a .send or .json)
   } catch (err) {console.log('err', err);}
 };
@@ -299,6 +320,8 @@ const removeConversation = async (req, res) => {
 module.exports = {
   getUserProfile,
   createUserProfile,
+  changeProfileLocation,
+  changeBalloonIcon,
   getLastVector,
   newLastVector,
   syncAllBalloons,

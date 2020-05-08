@@ -3,17 +3,15 @@ import styled, {keyframes} from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Map, Marker, Popup, TileLayer, AttributionControl } from "react-leaflet";
-import L, { Icon } from "leaflet";
-// import { DriftMarker } from "leaflet-drift-marker";
+// import L, { Icon } from "leaflet";
 
 import balloon from '../../assets/balloon.svg';
-// import goldbig from '../../assets/goldbig.png';
-// import raindrops from '../../assets/raindrops.png';
+import balloonIconArray from '../MultiModal/balloonArray';
 
 import useInterval from '../../hooks/use-interval-hook';
 import { updateLocation 
 } from '../../reducersActions/userActions';
-import { updateCurrentConditions, updateNearestCity, 
+import { updateCurrentConditions, updateSunTimes, updateNearestCity, 
 } from '../../reducersActions/conditionsActions';
 
 import fetchConditions from './fetchConditions';
@@ -52,7 +50,9 @@ const MapMap = () => {
     try {
       let conditions = await fetchConditions(profile.location);
       // console.log('conditions', conditions);
-      if(conditions) dispatch( updateCurrentConditions(conditions) );
+      if(conditions[0]) {dispatch( updateCurrentConditions(conditions[0]) )};
+      if(conditions[1]) {dispatch( updateSunTimes(conditions[1]) )};
+      
       let nearCity = await findClosestCity(profile.location);
       // console.log('nearCity', nearCity);
       if(nearCity) dispatch( updateNearestCity(nearCity) )
@@ -89,6 +89,7 @@ const MapMap = () => {
   //   console.log('useeffect mapRef', mapRef);
     const { current } = mapRef;
     const { leafletElement } = current;
+    if (newLoc[0])
     setTimeout(()=>{
       console.log('panTo');
       leafletElement.panTo(newLoc, panToOptions)
@@ -145,9 +146,11 @@ const MapMap = () => {
       }).catch(err => {console.log('udv err', err);})
   };
   const checkpoint = useInterval(()=>{
-    // console.log('int 10s viewcenter', mapRef.current.viewport.center);
+    // console.log('int 10s ', mapRef.current);
+    if(mapRef.current.viewport.center) {
     dispatch(updateLocation([...mapRef.current.viewport.center ]));
     updateVector();
+    }
   }, 10000);
 
 
@@ -192,11 +195,11 @@ const MapMap = () => {
           url={`https://tile.thunderforest.com/pioneer/{z}/{x}/{y}.png?apikey=${process.env.REACT_APP_THUNDERFOREST_MAPTILES_KEY}`}
           attribution='&copy; <a href="http://osm.org/copyright">OSM</a> contributors | Maptiles by Thunderforest' 
         />
-        <AttributionControl
+        {/* <AttributionControl
           position='bottomright' 
-        />
+        /> */}
 
-        <StyledBalloon src={balloon} />
+        <StyledBalloon src={balloonIconArray[profile.balloonIcon]} />
         
         <StyledButton 
           onClick={()=>{
@@ -218,13 +221,6 @@ const MapMap = () => {
 
         <OtherBalloons balloons={nearbyBalloons} />
 
-        {/* <DriftMarker 
-          // ref={markRef} 
-          position={newLoc} 
-          duration={60000}
-          icon={ballooon}
-          // keepAtCenter={true}
-        ></DriftMarker>  */}
       </Map>
       <LensEffect/>
     </StyledDiv>

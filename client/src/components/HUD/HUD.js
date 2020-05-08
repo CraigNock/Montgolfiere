@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react'; 
-import styled from 'styled-components'; 
+import styled, {keyframes} from 'styled-components'; 
 import { useDispatch, useSelector } from 'react-redux';
 
 import { changeElevation 
@@ -11,8 +11,8 @@ import { GoFlame } from "react-icons/go";
 import { GiFlame } from "react-icons/gi";
 import { GiFire } from "react-icons/gi";
 import { GiGlobe } from "react-icons/gi";
-import { GoTelescope } from "react-icons/go";
-import { GiSextant } from "react-icons/gi";
+// import { GoTelescope } from "react-icons/go";
+// import { GiSextant } from "react-icons/gi";
 import { GiSpyglass } from "react-icons/gi";
 import { IoIosBasket } from "react-icons/io";
 
@@ -25,14 +25,14 @@ import { IoIosBasket } from "react-icons/io";
 import paper from '../../assets/paper.jpg';
 
 
-const HUD = () => { 
+const HUD = ({children}) => { 
   const dispatch = useDispatch();
 
   const { lens, viewRange } = useSelector( state => state.app );
   const { elevation } = useSelector( state => state.user.profile);
   const { windSum, windBearing } = useSelector( state => state.conditions.current);
-  // console.log('elevation', elevation);
-  // console.log('viewRange', viewRange);
+  
+  const [toggle, setToggle] = useState(true);
 
   const handleElevation = async (e) => {
     const value = Number(e.target.value);
@@ -46,7 +46,10 @@ const HUD = () => {
   };
 
   return (
-    <StyledDiv> 
+    <StyledDiv style={{transform: toggle? 'translateX(0)' : 'translateX(-100%)'}}> 
+      <Tab onClick={() => setToggle(!toggle)}>
+        *
+      </Tab>
       <InfoDiv>
         <p>
           <span>Bearing: </span>
@@ -164,14 +167,27 @@ const HUD = () => {
         </LensSwitch>
 
       </ControlsDiv>
-      
+      {children}
     </StyledDiv> 
   ) 
 }; 
 
 export default HUD;
 
+
+const panelSlide = keyframes`
+  from {
+    transform: translateX(-100%)
+  }
+  to {
+    transform: translateX(0)
+  }
+`;
+
+
 const StyledDiv = styled.div`
+  animation: ${panelSlide} 1.5s ease-in-out;
+  transition: transform 1500ms ease-in-out;
   position: absolute;
   left: 0;
   top: 0;
@@ -182,7 +198,7 @@ const StyledDiv = styled.div`
   /* min-width: fit-content; */
   height: 80vh;
   min-height: 60vh;
-  overflow: hidden;
+  /* overflow: hidden; */
   /* background-image: url(${paper}); */
   /* background-size: cover; */
   /* opacity: 0.9; */
@@ -209,13 +225,6 @@ const InvisRadio = styled.input`
   visibility: hidden;
   margin-left: -1rem;
 `;
-const Toggletab = styled.div`
-  width: .5rem;
-  height: 3rem;
-  background: lightgray;
-  border: 1px solid goldenrod;
-  border-radius: 0 20% 20% 0;
-`;
 const FlexDiv = styled.div`
   display: flex;
   /* justify-content: space-around; */
@@ -225,10 +234,12 @@ const FlexDiv = styled.div`
 `;
 const InfoDiv = styled.div`
   margin: 0 0 .25rem;
+  
 `;
 const ControlsDiv = styled.div`
   padding: .5rem 0;
   border-top: 2px solid gray;
+
 `;
 const ElevUl = styled.ul`
   position: relative;
@@ -277,7 +288,6 @@ const ViewCircle = styled.div`
   0 0 10px 2px rgba(0,0,0,0.33) inset;
   
 `;
-
 const LensSwitch = styled.div`
   margin: .5rem 0;
 `;
@@ -293,3 +303,29 @@ const StyledButton = styled.button`
   background: gray;
   font-family: 'Rye', cursive;
 `;
+const Tab = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: -1.2rem;
+  top: 4rem;
+  width: 1.2rem;
+  height: 4rem;
+  opacity: .3;
+  background: tan;
+  box-sizing: border-box;
+  border: 3px solid #674c47;
+  border-radius: 0 50% 50% 0;
+  text-align: center;
+  color: gray;
+  font-family: 'Rye', cursive;
+  font-weight: bold;
+  z-index: -1;
+  &:hover {
+    cursor: pointer;
+    opacity: .5;
+  }
+`;
+
+

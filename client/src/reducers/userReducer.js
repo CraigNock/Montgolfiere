@@ -14,10 +14,7 @@ const initialState = {
 //   id: null,
 //   location: [],
 //   elevation: 2,
-
-///important, calc travel on re active(update on burn or location update?)
-//   lastActive: null, 
-
+//   balloonIcon: 18,
 //   items: [],
 //   upgrades: [],
 //   treasureMaps: {},
@@ -46,6 +43,12 @@ const userReducer = (state = initialState, action) => {
       // console.log('action.newLocation', action.newLocation);
       return produce(state, draftState => {
         draftState.profile.location = action.newLocation;
+      });
+    case 'CHANGE_BALLOON': 
+      // console.log('state.profile', state.profile);
+      // console.log('action.newElevation', action.newElevation);
+      return produce(state, draftState => {
+        draftState.profile.balloonIcon = action.newBalloon;
       });
     case 'CHANGE_ELEVATION': 
       // console.log('state.profile', state.profile);

@@ -89,7 +89,8 @@ const AuthProvider = ({ children, signInWithGoogle, signOut, user }) => {
               return handleLastVector(last.data)
             })
             .then(start => {
-              if(start) dispatch(updateLocation(start));
+              // console.log('start', start);
+              if(start[0]) dispatch(updateLocation(start));
             })
             .then(()=>dispatch(setStatusLogged()))
             

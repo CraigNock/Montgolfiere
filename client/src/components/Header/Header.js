@@ -43,9 +43,9 @@ const Header = () => {
           <ProButton onClick={()=> modalHandle()}>
             Profile
           </ProButton>
-          <StyledLink to={'/About'}>
+          <ProButton>
             About
-          </StyledLink>
+          </ProButton>
           <StylishSpace></StylishSpace>
           <StyledButton onClick={handleSignOut}>
             Sign Out

@@ -7,7 +7,9 @@ const morgan = require('morgan');
 //DATABASE HANDLERS
 const { 
   // getUserProfile, 
-  createUserProfile, 
+  createUserProfile,
+  // changeProfileLocation,
+  changeBalloonIcon, 
   getLastVector,
   newLastVector,
   syncAllBalloons,
@@ -20,7 +22,8 @@ const {
 //API HANDLERS//
 const { 
   getConditions, 
-  getNearestCity, 
+  getNearestCity,
+  retrieveImages, 
 } = require('./apiHandlers');
 
 const PORT = 8000;
@@ -49,6 +52,8 @@ express()
 //USER ENDPOINTS
   // .get('/getuser', getUserProfile)
   .post('/createuser', createUserProfile)
+  .put('/changeBalloon', changeBalloonIcon)
+  // .put('/changeProfileLocation', changeProfileLocation)
 //USER VECTOR ENDPOINTS
   .get('/getLastVector/:userId', getLastVector)
   .put('/newLastVector', newLastVector)
@@ -57,6 +62,7 @@ express()
 //VICINITY ENDPOINTS
   .post('/api/conditions', getConditions)
   .post('/api/nearest', getNearestCity)
+  .get('/api/retrieveImages/:nearestCity', retrieveImages)
 //CHAT ENDPOINTS
   .post('/newChatMessage', sendNewMessage)
   .post('/startConversation', startConversation)

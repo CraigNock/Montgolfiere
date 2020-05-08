@@ -1,7 +1,10 @@
-import React from 'react'; 
+import React, { useState } from 'react'; 
 import styled from 'styled-components'; 
 import { useDispatch, useSelector } from 'react-redux';
 import {format} from 'date-fns';
+
+import { changeBalloon 
+} from '../../reducersActions/userActions';
 
 import balloonIconArray from './balloonArray';
 import gentleman from '../../assets/gentleman.svg';
@@ -11,6 +14,24 @@ const ProfileDetails = () => {
 
   const { profile } = useSelector(state => state.user);
 
+  const [selected, setSelected] = useState(profile.balloonIcon);
+
+  const saveBalloonChoice = async (index) => {
+    if (selected === index) return;
+    dispatch(changeBalloon(index));
+    fetch('/changeBalloon', {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId: profile.userId,
+        newBalloon: index,
+      }),
+    }).catch(err => {console.log('udv err', err);})
+    setSelected(index);
+  };
 
   return (
     <StyledDiv> 
@@ -38,7 +59,12 @@ const ProfileDetails = () => {
         <Headings>Customize Balloon</Headings>
         <BalloonGallery>
           {balloonIconArray.map((icon, index) => {
-            return <Bicon src={icon} key={index+1}/>
+            return <Bicon 
+                      src={icon} 
+                      key={index+1}
+                      onClick={ ()=> saveBalloonChoice(index) }
+                      style={{borderColor: (profile.balloonIcon === index)? 'goldenrod' : 'transparent'}}
+                    />
           })}
         </BalloonGallery>
       </SubDiv>
@@ -142,5 +168,17 @@ const BalloonGallery = styled.div`
 const Bicon = styled.img`
   height: 4rem;
   width: 4rem;
-  padding: .5rem;
+  padding: .45rem;
+  box-sizing: border-box;
+  border-radius: 30%;
+  border-width: 3px;
+  border-style: dashed;
+  border-color: transparent;
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+    transition: transform 1s ease-in-out;
+    border-color: gray;
+    
+  }
 `;

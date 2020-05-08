@@ -98,16 +98,18 @@ const Homepage = () => {
       <>
       <MainContent>
         <LeftPanel>
-          <LeftBackground/>
-          <HUD/>
+          
+          <HUD><LeftBackground/></HUD>
         </LeftPanel>
         <CenterDiv>
           <MapMap />
-          <BottomPanel><BottomBackground/><NearbyDisplay/></BottomPanel>
+          <BottomPanel>
+            <NearbyDisplay><BottomBackground/></NearbyDisplay>
+          </BottomPanel>
         </CenterDiv>
         <RightPanel>
           {(status !== 'noChat')? <ChatInterface/> 
-          : <><RightBackground/><ConditionsDisplay/></>}
+          : <ConditionsDisplay><RightBackground/></ConditionsDisplay>}
         </RightPanel>
       </MainContent>
       <MultiModal/>
@@ -166,6 +168,7 @@ const LeftBackground = styled.div`
   border-radius: 5px 3rem 80% 5px;
   opacity: 0.9;
   padding: 1rem;
+  z-index: -1;
 `;
 const RightPanel = styled.div`
   position: relative;
@@ -197,6 +200,7 @@ const RightBackground = styled.div`
   border-radius: 3rem 5px 5px 80%;
   opacity: 0.9;
   padding: 1rem;
+  z-index: -1;
 `;
 const BottomPanel = styled.div`
   position: relative;
@@ -230,6 +234,7 @@ const BottomBackground = styled.div`
   border-radius: 80% 80% 5px 5px;
   opacity: 0.9;
   padding: 1rem;
+  z-index: -1;
 `;
 const CenterDiv = styled.div`
   display: flex;

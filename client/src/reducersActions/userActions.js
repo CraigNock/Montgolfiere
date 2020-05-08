@@ -13,6 +13,12 @@ export const updateLocation = (newLocation) => (
     newLocation,
   }
 );
+export const changeBalloon = (newBalloon) => (
+  {
+    type: 'CHANGE_BALLOON',
+    newBalloon,
+  }
+);
 export const changeElevation = (newElevation) => (
   {
     type: 'CHANGE_ELEVATION',

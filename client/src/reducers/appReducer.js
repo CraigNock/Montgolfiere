@@ -7,6 +7,7 @@ const initialState = {
   viewRange: 1,
   modalToggle: false,
   modalValue: 'profile',
+  aboutToggle: false,
 };
 //status'= 'awaiting signin' , 'loading' , 'logged in'
 //viewRange = 'global', 'radius', 'local'

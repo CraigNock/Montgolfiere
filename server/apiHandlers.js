@@ -4,6 +4,11 @@ const request = require('request-promise');
 // const opencage = require('opencage-api-client');
 const moment = require('moment-timezone');
 
+// const ImageSearchAPIClient = require('@azure/cognitiveservices-imagesearch');
+const CognitiveServicesCredentials = require('ms-rest-azure').CognitiveServicesCredentials;
+const Search = require('azure-cognitiveservices-search');
+
+
 const {startingLocations} = require('./data.js');
 
 const randy = (min, max) => { 
@@ -30,14 +35,23 @@ const getConditions = async (req, res) => {
   let lat = position[0];
   let long = position[1];
   let conditions = await darkGet(lat, long);
+  // console.log('conditions', conditions);
+  let sunTimes = [
+    conditions.currently.time, 
+    conditions.daily.data[3].sunriseTime,
+    conditions.daily.data[3].sunsetTime
+  ]
+  sunTimes = [...sunTimes];
   let timey = moment.unix(conditions.currently.time).tz(conditions.timezone).format('ha z');
   // console.log('timey ', timey);
   conditions.currently.time = timey;
   let windSum = (conditions.currently.windGust - conditions.currently.windSpeed)/2 + conditions.currently.windSpeed;
   conditions.currently.windSum = windSum;
+  // console.log('sunTimes', sunTimes);
   res.status(200).send({
     status:'200',
     conditions:conditions,
+    sunTimes: sunTimes,
   })
 
 };
@@ -85,11 +99,57 @@ const getNearestCity = async (req, res) => {
 //data.elements[0].lat //use for distance?
 //data.elements[0].lon
 
+/////////////////////
+/// BING IMAGE /////
+///////////////////
 
+
+const retrieveImages = async (req, res) => {
+  const { nearestCity } = req.params;
+  //replace this value with your valid subscription key.
+  let serviceKey = process.env.AZURE_COGNITIVE_KEY;
+
+  //the search term for the request
+  let searchTerm = `city of ${nearestCity} scenic`;
+  console.log('city', nearestCity);
+  //instantiate the image search client
+  let credentials = new CognitiveServicesCredentials(serviceKey);
+  let imageSearchApiClient = new Search.ImageSearchAPIClient(credentials);
+
+  const sendImageQuery = async () => {
+    return await imageSearchApiClient.imagesOperations.search(searchTerm, {
+      imageType: "Photo",
+    });
+  };
+
+  sendImageQuery().then(imageResults => {
+    if (imageResults == null) {
+    console.log("No image results were found.");
+    }
+    else {
+        console.log(`Total number of images returned: ${imageResults.value.length}`);
+        // console.log(`First image content url: ${imageResults.value[0].contentUrl}`);
+        // console.log('imageResults', imageResults);
+        console.log(`Total number of images found: ${imageResults.value.length}`);
+        res.status(200).json({
+          status: 200,
+          images: [
+            imageResults.value[0].contentUrl, 
+            imageResults.value[1].contentUrl, 
+            imageResults.value[2].contentUrl, 
+            imageResults.value[3].contentUrl
+          ],
+        })
+    }
+  })
+  .catch(err => console.error(err))
+
+};
 
 module.exports = {
   getConditions,
   getNearestCity,
+  retrieveImages,
 };
 
 

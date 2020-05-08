@@ -30,7 +30,7 @@ const NearbyDisplay = ({children}) => {
     fetch(`/api/retrieveImages/${nearestCity.tags.name}`)
       .then(data => data.json())
       .then(data => {
-        console.log('data', data.images);
+        // console.log('data', data.images);
         setImageArray(data.images);
       }).catch(err => console.log('cond err', err))
   }, [nearestCity]);

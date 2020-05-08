@@ -102,11 +102,14 @@ const MapMap = () => {
 //use findNextLoc on stored speed and bearing with current center then set as newloc
   const newLeg = async (toggle) => {
     // console.log('newLeg windSum, windBearing', windSum, windBearing, profile.elevation, launch, anchored);
+    const modBearing = (windBearing + profile.direction)>360? 
+    (windBearing + profile.direction -360) 
+    : (windBearing + profile.direction);
     if (!toggle) {
     let newDest = await findNextLoc(
       mapRef.current.viewport.center[0], 
       mapRef.current.viewport.center[1], 
-      windBearing,
+      modBearing,
       (windSum * 10 *  profile.elevation) 
     );
     console.log('newDest', newDest);
@@ -129,6 +132,9 @@ const MapMap = () => {
 //STORES BALLOON LOCATION EVERY 10 SECONDS lastVector
   const updateVector = () => {
     // console.log('vector update');
+    const modBearing = (windBearing + profile.direction)>360? 
+    (windBearing + profile.direction -360) 
+    : (windBearing + profile.direction);
       fetch('/newLastVector', {
         method: 'PUT',
         headers: {
@@ -139,7 +145,8 @@ const MapMap = () => {
           userId: profile.userId,
           lastActive: (new Date()).getTime(),
           lastLocation: [...mapRef.current.viewport.center], 
-          lastBearing: windBearing,
+          lastBearing: modBearing,
+          lastDirection: profile.direction,
           lastWindSum: windSum,
           lastElevation: profile.elevation,
         }),
@@ -157,10 +164,13 @@ const MapMap = () => {
 //SYNC GLOBAL BALLOON LOCATIONS
   const beef = useInterval(async ()=>{
     // console.log('syncsync');
+    const modBearing = (windBearing + profile.direction)>360? 
+    (windBearing + profile.direction -360) 
+    : (windBearing + profile.direction);
     let newBalloons = await nearbyBalloonSync({
     elevation: profile.elevation,
     location: profile.location,
-    bearing: windBearing,
+    bearing: modBearing,
     displayName: profile.displayName,
     userId: profile.userId,
     timeStamp: Date.now(),

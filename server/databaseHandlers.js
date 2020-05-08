@@ -93,6 +93,7 @@ const createUserProfile = async (req, res) => {
       userId: userId,
       location: start.coords,
       elevation: 1,
+      direction: 0,
       balloonIcon: 18,
       items: [],
       upgrades: [],
@@ -147,6 +148,12 @@ const changeProfileLocation = async (userId, newLocation) => {
     // res.status(204).json({status:204}); //fixed with json (.status doesnt actually send, needs a .send or .json)
     } catch (err) {console.log('err', err);}
 };
+const changeProfileDirection = async (userId, newDirection) => {
+  try {
+    await db.ref('userProfiles/' + userId + '/direction').set(newDirection);
+    // res.status(204).json({status:204}); //fixed with json (.status doesnt actually send, needs a .send or .json)
+    } catch (err) {console.log('err', err);}
+};
 
 // type: PUT
 const changeBalloonIcon = async (req, res) => {
@@ -176,6 +183,7 @@ const getLastVector = async (req, res) => {
 //   email: blah@blah,
 //   lastActive: 43423,
 //   lastLocation: [44, 44],
+//   lastDirection: 45,
 //   lastBearing: 230,
 //   lastWindSum: 20,
 //   lastElevation: 2,
@@ -187,6 +195,7 @@ const newLastVector = async (req, res) => {
   try {
   await db.ref('lastVectors/' + req.body.userId).set(req.body);
   await changeProfileLocation(req.body.userId, req.body.lastLocation);
+  await changeProfileDirection(req.body.userId, req.body.lastDirection);
   res.status(204).json({status:204}); //fixed with json (.status doesnt actually send, needs a .send or .json)
   } catch (err) {console.log('err', err);}
 };

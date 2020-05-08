@@ -14,6 +14,7 @@ const initialState = {
 //   id: null,
 //   location: [],
 //   elevation: 2,
+//   direction: 0,    //or -45 or 45
 //   balloonIcon: 18,
 //   items: [],
 //   upgrades: [],
@@ -55,6 +56,12 @@ const userReducer = (state = initialState, action) => {
       // console.log('action.newElevation', action.newElevation);
       return produce(state, draftState => {
         draftState.profile.elevation = action.newElevation;
+      });
+    case 'CHANGE_DIRECTION': 
+      // console.log('state.profile', state.profile);
+      // console.log('action.newElevation', action.newElevation);
+      return produce(state, draftState => {
+        draftState.profile.direction = action.newDirection;
       });
     default:
       return state ;

@@ -25,4 +25,10 @@ export const changeElevation = (newElevation) => (
     newElevation,
   }
 );
+export const changeDirection = (newDirection) => (
+  {
+    type: 'CHANGE_DIRECTION',
+    newDirection,
+  }
+);
 

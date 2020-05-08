@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import styled, {keyframes} from 'styled-components'; 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { changeElevation 
+import { changeElevation, changeDirection 
 } from '../../reducersActions/userActions';
 import { toggleLens, setViewRange 
 } from '../../reducersActions/appActions';
@@ -13,8 +13,12 @@ import { GiFire } from "react-icons/gi";
 import { GiGlobe } from "react-icons/gi";
 // import { GoTelescope } from "react-icons/go";
 // import { GiSextant } from "react-icons/gi";
+import { GiShipWheel } from "react-icons/gi";
 import { GiSpyglass } from "react-icons/gi";
 import { IoIosBasket } from "react-icons/io";
+import { FiArrowUpLeft } from "react-icons/fi"
+import { FiArrowUpRight } from "react-icons/fi"
+import { FiArrowUp } from "react-icons/fi"
 
 // GiHandheldFan GiSail GiSpyglass GiEmptyHourglass IoIosCog
 //GiKite  GiBurningEmbers GiFireZone GiPulleyHook GiOldLantern
@@ -29,10 +33,11 @@ const HUD = ({children}) => {
   const dispatch = useDispatch();
 
   const { lens, viewRange } = useSelector( state => state.app );
-  const { elevation } = useSelector( state => state.user.profile);
+  const { elevation, direction } = useSelector( state => state.user.profile);
   const { windSum, windBearing } = useSelector( state => state.conditions.current);
   
   const [toggle, setToggle] = useState(true);
+  const [path, setPath] = useState(0);
 
   const handleElevation = async (e) => {
     const value = Number(e.target.value);
@@ -44,6 +49,10 @@ const HUD = ({children}) => {
     // console.log('value', value);
     dispatch(setViewRange(value));
   };
+  const handleDirection = async (val) => {
+    setPath(val);
+    dispatch(changeDirection(val));
+  };
 
   return (
     <StyledDiv style={{transform: toggle? 'translateX(0)' : 'translateX(-100%)'}}> 
@@ -53,7 +62,9 @@ const HUD = ({children}) => {
       <InfoDiv>
         <p>
           <span>Bearing: </span>
-          {windBearing}°
+          {(windBearing + direction)>360? 
+          (windBearing + direction -360) 
+          : (windBearing + direction)}°
         </p>
         <p>
           <span>Velocity: </span>
@@ -157,14 +168,40 @@ const HUD = ({children}) => {
           </ViewCircle>
         </FlexDiv>
 
-        <p><span>Items</span></p>
-
         <LensSwitch>
           <span>Lens:</span>
           <StyledButton onClick={ () => dispatch(toggleLens()) }>
             { lens? 'ON' : 'OFF'}
           </StyledButton>
         </LensSwitch>
+
+        <Sail>
+          <UnderButton 
+            disabled={(path === 0)}
+            style={{borderColor: (path === 0)? '#00563f': 'goldenrod'}}
+            onClick={()=> handleDirection(0)}
+          >
+            <FiArrowUp/>
+          </UnderButton>
+          <SubSail>
+            <SailButton 
+              disabled={(path === -45)}
+              style={{borderColor: (path === -45)? '#00563f': 'goldenrod'}}
+              onClick={()=> handleDirection(-45)}
+            >
+              <FiArrowUpLeft/>
+            </SailButton>
+            <SailButton
+              disabled={(path === 45)}
+              style={{borderColor: (path === 45)? '#00563f': 'goldenrod'}}
+              onClick={()=> handleDirection(45)}
+            >
+            <FiArrowUpRight/>
+            </SailButton>
+          </SubSail>
+          
+          <WheelDiv><GiShipWheel/></WheelDiv>
+        </Sail>
 
       </ControlsDiv>
       {children}
@@ -289,7 +326,7 @@ const ViewCircle = styled.div`
   
 `;
 const LensSwitch = styled.div`
-  margin: .5rem 0;
+  margin: .5rem 0 .75rem;
 `;
 const StyledButton = styled.button`
   display: inline-flex;
@@ -303,6 +340,41 @@ const StyledButton = styled.button`
   background: gray;
   font-family: 'Rye', cursive;
 `;
+const Sail = styled.div`
+  /* filter: grayscale(100%); */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  /* margin-left: -2.5rem; */
+  width: 70%;
+  border-top: 2px solid gray;
+  padding-top: .75rem;
+`;
+const SubSail = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  
+  margin-bottom: .25rem;
+  
+`;
+const WheelDiv = styled.div`
+  width: 100%;
+  margin-left: .4rem;
+  font-size: 3.5rem;
+  color: #2b0b13;
+  
+`;
+const SailButton = styled(StyledButton)`
+  width: 2rem;
+  margin: 0 .25rem 0 0;
+  /* border: 2px solid silver; */
+`;
+const UnderButton = styled(SailButton)`
+  margin: 0 0 0 1.1rem;
+`;
+
 const Tab = styled.div`
   position: absolute;
   display: flex;

@@ -20,10 +20,12 @@ import b18 from '../../assets/Balloon Icons/hot-air-balloon (18).svg';
 import b19 from '../../assets/Balloon Icons/hot-air-balloon (19).svg';
 import b20 from '../../assets/Balloon Icons/hot-air-balloon (20).svg';
 import b21 from '../../assets/Balloon Icons/hot-air-balloon (21).svg';
-
+import b22 from '../../assets/Balloon Icons/hot-air-balloon (22).svg';
+import b23 from '../../assets/Balloon Icons/hot-air-balloon (23).svg';
+import b24 from '../../assets/Balloon Icons/hot-air-balloon (24).svg';
 
 const balloonIconArray = 
-[ b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16,b17,b18,b19,b20,b21 ]
+[ b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16,b17,b18,b19,b20,b21,b22,b23,b24 ]
 
 
 export default balloonIconArray;

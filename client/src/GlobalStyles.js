@@ -71,6 +71,7 @@ const GlobalStyleGlobal = createGlobalStyle`
     linear-gradient(180deg, 
       rgba(0,122,235,1) 0%, 
     rgba(157,207,255,1) 83%);
+    /* background: linear-gradient(180deg, rgba(0,3,34,1) 0%, rgba(0,18,54,1) 83%); */
     overflow: hidden;
     color: whitesmoke;
     font-family: 'Poppins', sans-serif;

@@ -81,7 +81,7 @@ const createUserProfile = async (req, res) => {
   } else {
     const userProfilesRef = db.ref('userProfiles');
     const start = startingLocations[randy(0, 10)];
-
+    // const start = startingLocations[0];
     //pre creates a key in desired node, 
     //can then include this key value in data placed in that location
     const userId = await userProfilesRef.push().key; 

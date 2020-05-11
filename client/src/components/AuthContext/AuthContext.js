@@ -15,13 +15,13 @@ export const AuthContext = createContext(null);
 
   // Your web app's Firebase configuration
   var firebaseConfig = {
-    apiKey: "***REMOVED***",
-    authDomain: "***REMOVED***",
-    databaseURL: "***REMOVED***",
-    projectId: "***REMOVED***",
-    storageBucket: "***REMOVED***.appspot.com",
-    messagingSenderId: "***REMOVED***",
-    appId: "1:***REMOVED***:web:***REMOVED***"
+    apiKey: process.env.REACT_APP_FB_APIKEY,
+    authDomain: process.env.REACT_APP_FB_AUTHDOMAIN,
+    databaseURL: process.env.REACT_APP_FB_DATABASEURL,
+    projectId: process.env.REACT_APP_FB_PROJECTID,
+    storageBucket: process.env.REACT_APP_FB_STORAGEBUCKET,
+    messagingSenderId: process.env.REACT_APP_FB_MESSAGINSENDERID,
+    appId: process.env.REACT_APP_FB_APPID
   };
 
 //initializes firebase app

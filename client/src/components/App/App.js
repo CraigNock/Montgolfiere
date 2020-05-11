@@ -46,7 +46,7 @@ const App = () => {
 
   return (
     <Router>
-      <Wrapper>
+      <Wrapper style={{filter: (timeOfDay === night)? 'brightness(75%)' : 'none'}}>
         <GlobalStyles />
         <CloudBackground style={{background: `${timeOfDay}`}}/>
         <Clouds/>

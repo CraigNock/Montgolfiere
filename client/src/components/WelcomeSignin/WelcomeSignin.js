@@ -1,5 +1,5 @@
-import React from 'react'; 
-import styled from 'styled-components'; 
+import React, {useState} from 'react'; 
+import styled, {keyframes} from 'styled-components'; 
 
 import { AuthContext } from '../AuthContext/AuthContext';
 
@@ -9,8 +9,11 @@ import parchment2 from '../../assets/parchment2.png';
 const WelcomeSignin = () => { 
   const { signInWithGoogle } = React.useContext(AuthContext);
 
+  const [toggle, setToggle] = useState(true);
+
   return (
-    <StyledDiv> 
+    <Backing>
+    <StyledDiv style={{transform: toggle? 'translateY(0vh)' : 'translateY(80vh)'}}> 
       <Intro> 
         <Title>Welcome Aeronaut!</Title>
         <p><span>Where <em>is</em> my Balloon?</span> uses the very latest in dirgible tracking technology.</p> 
@@ -23,7 +26,9 @@ const WelcomeSignin = () => {
             Sign In
         </StyledButton>
       </SignIn>
+      <Tab onClick={() => setToggle(!toggle)}>*</Tab>
     </StyledDiv> 
+    </Backing>
   ) 
 }; 
 
@@ -31,7 +36,31 @@ const WelcomeSignin = () => {
 export default WelcomeSignin;
 
 
+
+const panelSlide = keyframes`
+  from {
+    transform: translateY(80vh)
+  }
+  to {
+    transform: translateY(0vh)
+  }
+`;
+
+const Backing = styled.div`
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
 const StyledDiv = styled.div`
+  animation: ${panelSlide} 2s ease-in-out;
+  transition: transform 2000ms ease-in-out;
+  position: absolute;
+  top: 0vh;
+  left: calc(50% - 25vw);
   margin: 20vh auto;
   width: 50vw;
   /* height: 50%; */
@@ -42,7 +71,7 @@ const StyledDiv = styled.div`
   padding: 3rem;
   background-image: url(${parchment2});
   opacity: 0.9;
-  
+  box-sizing: border-box;
   background-size: cover;
   /* background: whitesmoke; */
   border: 10px ridge peru;
@@ -89,4 +118,25 @@ const StyledButton = styled.button`
   color: white;
   background: gray;
   font-family: 'Rye', cursive;
+`;
+const Tab = styled.div`
+  position: absolute;
+  top: -1.7rem;
+  left: calc(50% - 2rem);
+  width: 4rem;
+  height: 1.2rem;
+  opacity: .3;
+  background: tan;
+  box-sizing: border-box;
+  border: 3px solid #674c47;
+  border-radius: 50% 50% 0 0;
+  text-align: center;
+  color: gray;
+  font-family: 'Rye', cursive;
+  font-weight: bold;
+  z-index: -10;
+  &:hover {
+    cursor: pointer;
+    opacity: .5;
+  }
 `;

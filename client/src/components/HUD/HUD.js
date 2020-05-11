@@ -261,6 +261,7 @@ const StyledDiv = styled.div`
 const InvisRadio = styled.input`
   visibility: hidden;
   margin-left: -1rem;
+  
 `;
 const FlexDiv = styled.div`
   display: flex;
@@ -276,7 +277,9 @@ const InfoDiv = styled.div`
 const ControlsDiv = styled.div`
   padding: .5rem 0;
   border-top: 2px solid gray;
-
+  label{
+    cursor: pointer;
+  }
 `;
 const ElevUl = styled.ul`
   position: relative;

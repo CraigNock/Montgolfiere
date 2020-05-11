@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import paper from '../../assets/paper.jpg';
 
-import { GiSextant } from "react-icons/gi";
+// import { GiSextant } from "react-icons/gi";
 
 const NearbyDisplay = ({children}) => { 
   const { nearestCity } = useSelector(state => state.conditions);

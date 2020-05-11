@@ -15,13 +15,13 @@ export const AuthContext = createContext(null);
 
   // Your web app's Firebase configuration
   var firebaseConfig = {
-    apiKey: "***REMOVED***",
+    apiKey: "API KEY",
     authDomain: "***REMOVED***",
     databaseURL: "***REMOVED***",
     projectId: "***REMOVED***",
     storageBucket: "***REMOVED***.appspot.com",
-    messagingSenderId: "***REMOVED***",
-    appId: "1:***REMOVED***:web:***REMOVED***"
+    messagingSenderId: "ID",
+    appId: "APPID"
   };
 
 //initializes firebase app

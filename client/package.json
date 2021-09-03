@@ -10,7 +10,7 @@
     "date-fns": "^2.13.0",
     "dotenv": "^8.2.0",
     "firebase": "^7.14.2",
-    "immer": "^8.0.1",
+    "immer": "^9.0.6",
     "leaflet": "^1.6.0",
     "leaflet-drift-marker": "^1.0.3",
     "new-component": "^1.0.1",
